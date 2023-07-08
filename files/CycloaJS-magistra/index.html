@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>CycloaJS: JavaScript NES Emulator</title>
+	<meta name="description" content="">
+	<link rel="stylesheet" href="css/style.css">
+	<!--<script type="text/javascript" src="http://code.jquery.com/jquery-1.8.0.min.js"></script> -->
+	<script type="text/javascript" src="js/lib/jquery-1.8.0.js"></script>
+	<script type="text/javascript" src="build/cycloa.js"></script>
+	<!--
+	<script type="text/javascript" src="js/lib/jquery-1.8.0.js"></script>
+	<script type="text/javascript" src="js/cycloa/cycloa.js"></script>
+	<script type="text/javascript" src="js/cycloa/trace.js"></script>
+	<script type="text/javascript" src="js/cycloa/err.js"></script>
+	<script type="text/javascript" src="js/cycloa/util.js"></script>
+	<script type="text/javascript" src="js/cycloa/default_fairy.js"></script>
+	<script type="text/javascript" src="js/cycloa/fast.js"></script>
+	<script type="text/javascript" src="js/fairy.js"></script>
+	<script type="text/javascript" src="js/interface.js"></script>
+	-->
+</head>
+<body>
+<div id="background">
+	<h1 class="title">JavaScript NES Emulator: CycloaJS</h1>
+</div>
+<div id="wrapper">
+	<div id="header">
+	</div>
+	<div id="content">
+		<div>
+			<p>Please drag &amp; drop your .NES game or select a homebrew game below.</p>
+		</div>
+		<label for="rom_sel"></label>
+		<select id="rom_sel">
+			<option value="">Select...</option>
+			<option value="roms/alter_ego/Alter_Ego.nes">Alter Ego</option>
+			<option value="roms/thwaite-0.03/thwaite.nes">thwaite</option>
+			<option value="roms/croom/croom.nes">Concentration Room</option>
+			<option value="roms/lj65/lj65.nes">LJ65</option>
+		</select>
+		<div id="interface_box" class="control_box">
+			<input id="screen_zoom" type="button" value="zoom in/out" />
+		</div>
+		<div id="control_box" class="control_box">
+			<input id="nes_hardreset" type="button" value="HardReset"/>
+			<input id="nes_reset" type="button" value="Reset"/>
+			<input id="nes_stop" type="button" value="Stop"/>
+			<input id="nes_start" type="button" value="Start"/>
+		</div>
+		<div class="nes_screen_wrapper" id="nes_screen_wrapper">
+			<canvas id="nes_screen" width="256" height="240"></canvas>
+		</div>
+		<div id="state" class="control_box"></div>
+		<hr>
+		<div>
+			<h2>Control / 操作方法</h2>
+			<table>
+				<tr>
+					<th>Player 1</th><th>Button</th>
+				</tr>
+				<tr>
+					<td>A</td><td>Z</td>
+				</tr>
+				<tr>
+					<td>B</td><td>X</td>
+				</tr>
+				<tr>
+					<td>Start</td><td>Enter</td>
+				</tr>
+				<tr>
+					<td>Select</td><td>Space</td>
+				</tr>
+				<tr>
+					<td>↑</td><td>↑</td>
+				</tr>
+				<tr>
+					<td>→</td><td>→</td>
+				</tr>
+				<tr>
+					<td>←</td><td>←</td>
+				</tr>
+				<tr>
+					<td>↓</td><td>↓</td>
+				</tr>
+			</table>
+			<p>Currently player2 is not supported. I have tried many times to support Gamepad API, but the API does not work at all... :(</p>
+			<p>現在プレイヤ２は対応していません。ゲームパッドAPIにも何度も対応しようとしたのですが、ゲームパッドの状態が拾えません…。</p>
+		</div>
+		<div>
+			<h2>About CycloaJS</h2>
+			<p>This emulator is a port of <a href="https://github.com/ledyba/Cycloa">Cycloa</a>, a NES emulator written in C++, to JavaScript. The aim of this development is survey of JavaScript performance. In PC browsers, this emulator runs faster than jsnes with funciton inline expansin, but source code has been very messy. In iPad (1st gen), both emulators runs at more of the same speed.</p>
+		</div>
+		<div>
+			<h2>Sourcecode</h2>
+			<p>All sourecodes are licensed under AGPL v3 or later, and available on <a href="https://github.com/ledyba/CycloaJS">Github</a>.</p>
+		</div>
+	</div>
+	<div id="footer">
+		(C) 2012 <a href="https://7io.org/">Kaede Fujisaki</a> / Fairy and Rockets
+	</div>
+</div>
+</body>
+</html>

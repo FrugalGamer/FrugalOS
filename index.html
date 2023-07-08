@@ -1,0 +1,399 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <title>FrugalOS - An art and programming experiment</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.13.2/themes/smoothness/jquery-ui.css">
+  <link type="text/css" rel="stylesheet" href="css/main.css">
+  
+  <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+  <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+  <script>
+  // jQuery fuctions only here
+	  $( function() {
+	  // This makes all the windows draggable
+		$( ".draggable" ).draggable();
+	  
+	  // This is for closing windows
+		$(".close").click(function() {
+			$(this).parents(".window").hide();
+		});
+		
+	  // This is for minimizing windows
+	    $(".minimize").click(function() {
+			// Get the window's title
+			var windowTitle = $(this).parent().children(".windowTitle");
+			// Get the window's ID
+			var windowID = $(this).parents(".window").attr('id');
+			
+			// Add an li element in our taskbar with text and a link that matches the window's title
+			$("#minimizedApps").append("<li><a href='#' onclick=showWindow('" + windowID + "') class='" + windowID + "'>" + windowTitle.text() + "</a></li>");
+		
+			// Hide the window as in the previous function
+			$(this).parents(".window").hide();
+		});
+	  
+	  // This is for toggling menus
+		$(".toggleMenu").click(function() {
+			$("#beginMenu").toggle();
+		});
+		
+		// This is specifically for the Begin menu in the taskBar
+		$("#beginMenu").menu();
+		
+		// This is for any element that has the .menu class
+		$(".menu").menu();
+		
+
+		// This is for starting one of the games (Cycloa emulator). This should probably be moved to some place more logical
+
+		$("#cycloaLink").click(function(){
+	  	$.ajax({
+		    url: "files/CycloaJS-magistra/index.html",
+
+		    dataType: "jsonp",
+		 
+		    // Work with the response
+            success: function(dataWeGotViaJsonp){
+                var text = dataWeGotViaJsonp;
+
+                $('#progWindow').html(text);
+		    }
+		});
+	  });
+	});
+  </script>
+
+<!--- Link scripts for specific apps here ---->
+   <script src="scripts/downloadFile.js"></script>
+   <script src="script/calc.js"></script>
+   <script src="script/textpad.js"></script>
+   <script src="script/csvEdit.js"></script>
+</head>
+
+<body>
+    <div id="desktop">
+	<!------  Desktop icons are here ------->
+		<div id="desktopIcons">
+			<a href="#" onclick="showWindow('myComputer')"><img src="img/icon_mycomputer_2x.png" alt="My Computer"><br>
+			<span class="iconLabel">Computer</span></a><br><br>
+			
+			<a href="#" onclick="showWindow('welcomeTXT')"><img src="img/icon_text_2x.png" alt="Welcome.txt"><br>
+			<span class="iconLabel">Welcome.txt</a></span><br><br>
+			
+			<a href="#" onclick="showWindow('settings')"><img src="img/icon_settings_2x.png" alt="Settings"><br>
+			<span class="iconLabel">Settings</span></a><br><br>
+			
+			<a href="#" onclick="showWindow('textpad')"><img src="img/icon_textpad_2x.png" alt="Textpad"><br>
+			<span class="iconLabel">Textpad</span></a><br><br>
+
+			<a href="#" onclick="showWindow('calculator')"><img src="img/icon_calculator_2x.png" alt="Calculator"><br>
+			<span class="iconLabel">Calculator</span></a><br><br>
+
+			<a href="#" onclick="showWindow('csvEdit')"><img src="img/icon_csv_2x.png" alt="csvEdit"><br>
+			<span class="iconLabel">csvEdit</span></a><br><br>
+			
+			<a href="#" onclick="showWindow('gamesFolder')"><img src="img/icon_games_2x.png" alt="gamesFolder"><br>
+			<span class="iconLabel">Games</span></a><br><br>
+		</div>
+		
+		<div class="window draggable off" id="settings">
+			<div class="menuBar">
+				<span id="computerWindow" class="windowTitle">Settings</span>
+				<a href="#" class="minimize">_</a> | <a href="#" class="close">X</a>
+			</div>
+			
+			<div class="content">
+				To be added:
+				<ul>
+					<li>Font changes (size, color, family)</li>
+					<li>Desktop image</li>
+					<li>color schemes</li>
+				</ul>
+			</div>
+		</div>
+		
+		<div class="window draggable off" id="textpad">
+			<div class="menuBar">
+				<span id="computerWindow" class="windowTitle">Textpad 0.1</span>
+				<a href="#" class="minimize">_</a> | <a href="#" class="close">X</a>
+			</div>
+			
+			<div class="content">
+				<div class="progMenu">
+					<ul class="menu">
+						<li><a href="#">File</a>
+							<ul>
+								<li><a href="#" id="textpad-save-menu">Save</a></li>
+								<li><a href="#" id="textpad-open-menu">Open...</a></li>
+							</ul>
+						</li>
+						<li><a href="#">Edit</a></li>
+						<li><a href="#">About</a></li>
+					</ul>
+				</div>
+				<textarea id="textpad_wa"></textarea>
+				<div class="uiButtons">
+					<input type="button" value="Clear" id="textpad-clear"> <input type="button" value="Save" id="textpad-save"> <input type="file" value="Open..." id="textpad-open" onchange="loadTxtFile()" style="display: none;">
+				</div>
+			</div>
+			
+			<div class="off" id="modalDialogue" title="Warning!">
+				<p>Are you sure? Anything that has not been saved will be lost!</p>
+				
+				<p><input type="button" value="No" class="dialogueBtn"> <input type="button" value="Yes" id="textpad_ybtn" class="dialogueBtn"></p>
+			</div>
+		</div>
+		
+		<div class="window draggable off" id="myComputer">
+			<div class="menuBar">
+				<span id="computerWindow" class="windowTitle">Computer</span>
+				<a href="#" class="minimize">_</a> | <a href="#" class="close">X</a>
+			</div>
+			
+			<div class="content">
+				<div class="folderIcon">
+					<a href=""><img src="img/icon_harddrive_2x.png" alt="Hard Drive"></a><br>
+					<span class="iconLabel">OS Storage</span></a>
+				</div>
+				<div class="folderIcon">
+					<a href=""><img src="img/icon_browserStorage_2x.png" alt="BrowserStorage"></a><br>
+					<span class="iconLabel">Browser Storage</span></a>
+				</div>				
+			</div>
+		</div>
+		
+		<div class="window draggable" id="welcomeTXT">
+			<div class="menuBar">
+				<span id="introWindow" class="windowTitle">Welcome.txt</span>
+				<a href="#" class="minimize">_</a> | <a href="#" class="close">X</a>
+			</div>
+			
+			<div class="content">
+				<h1>Welcome to FrugalOS</h1>
+
+				<p>This document will change throughout time as I add more to it. <a href="#" title="This should popup on mouseover">This is a test tooltip.</a></p>
+
+				<h2>Update Log</h2>
+
+				<p>0.1 - Project begin</p>
+				
+				<h2>To Do List</h2>
+				
+				<ul>
+					<li>Make window code modal</li>
+					<li><strike>Implement close and minimize menu buttons</strike></li>
+					<li><strike>Add desktop icons</strike></li>
+					<li><strike>Add/Program calculator</strike></li>
+					<li><strike>Add save/open function to TextPad</strike></li>
+					<li>Add basic markdown buttons to Textpad</li>
+					<li>Add backgrounds and switcher</li>
+					<li><strike>Add CSV editor</strike></li>
+					<li>Add image viewer</li>
+				</ul>	
+			</div>
+		</div>
+
+		<div class="window draggable off" id="calculator">
+			<div class="menuBar">
+				<span id="calculator-span" class="windowTitle">Calculator</span>
+				<a href="#" class="minimize">_</a> | <a href="#" class="close">X</a>
+			</div>
+			
+			<div class="content">
+				<div class="progMenu">
+					<ul class="menu">
+						<li><a href="#">File</a>
+						<ul>
+							<li><a href="#">Show memory</a></li>
+						</ul></li>
+					</ul>
+				</div>
+				
+				<span id="calc_result">0</span><br>
+				<table>
+					<tr>
+						<td><input type="button" value="1"></td>
+						<td><input type="button" value="2"></td>
+						<td><input type="button" value="3"></td>
+						<td><input type="button" value="+"></td>
+					</tr>
+					<tr>
+						<td><input type="button" value="4"></td>
+						<td><input type="button" value="5"></td>
+						<td><input type="button" value="6"></td>
+						<td><input type="button" value="-"></td>
+					</tr>
+					<tr>
+						<td><input type="button" value="7"></td>
+						<td><input type="button" value="8"></td>
+						<td><input type="button" value="9"></td>
+						<td><input type="button" value="x"></td>
+					</tr>
+					<tr>
+						<td><input type="button" value="0"></td>
+						<td><input type="button" value="."></td>
+						<td><input type="button" value="C"></td>
+						<td><input type="submit" value="="></td>
+					</tr>
+				</table>
+			</div>
+		</div>
+
+
+		<div class="window draggable off" id="csvEdit">
+			<div class="menuBar">
+				<span id="csvEdit-span" class="windowTitle">csvEdit</span>
+				<a href="#" class="minimize">_</a> | <a href="#" class="close">X</a>
+			</div>
+			
+			<div class="content">
+				<div class="progMenu">
+					<ul class="menu">
+						<li><a href="#">File</a>
+						<ul>
+							<li><a href="#" class="new">New</a></li>
+							<li><a href="#" class="save">Save</a></li>
+							<li><a href="#" class="open">Open</a></li>
+						</ul></li>
+						<li><a href="#" class="help">Help</a></li>
+					</ul>
+				</div>
+				
+				<div class="off" id="csv-modalDialogue" title="Warning!">
+					<p>Are you sure? Anything that has not been saved will be lost!</p>
+					
+					<p><input type="button" value="No" class="dialogueBtn"> <input type="button" value="Yes" id="csvEdit_ybtn" class="dialogueBtn"></p>
+				</div>
+
+				<div class="progMenu">
+					<input type="button" value="insertRow" id="insert-row"> <input type="button" value="insertCell" id="insert-cell"> <input type="button" value="removeRow" id="remove-row"> <input type="button" value="removeCell" id="remove-cell">
+				</div>
+				
+				<table class="csvDisplay">
+					<tr>
+						<td class="csv-td-r0c1"><input type="text" class="csv-text-r0c1"></td>
+						<td class="csv-td-r0c2"><input type="text" class="csv-text-r0c2"></td>
+						<td class="csv-td-r0c3"><input type="text" class="csv-text-r0c3"></td>
+						<td class="csv-td-r0c4"><input type="text" class="csv-text-r0c4"></td>
+					</tr>
+					<tr class="even">
+						<td class="csv-td-r1c1"><input type="text" class="csv-text-r1c1"></td>
+						<td class="csv-td-r1c2"><input type="text" class="csv-text-r1c2"></td>
+						<td class="csv-td-r1c3"><input type="text" class="csv-text-r1c3"></td>
+						<td class="csv-td-r1c4"><input type="text" class="csv-text-r1c4"></td>
+					</tr>
+					<tr>
+						<td class="csv-td-r2c1"><input type="text" class="csv-text-r2c1"></td>
+						<td class="csv-td-r2c2"><input type="text" class="csv-text-r2c2"></td>
+						<td class="csv-td-r2c3"><input type="text" class="csv-text-r2c3"></td>
+						<td class="csv-td-r2c4"><input type="text" class="csv-text-r2c4"></td>
+					</tr>
+					<tr class="even">
+						<td class="csv-td-r3c1"><input type="text" class="csv-text-r3c1"></td>
+						<td class="csv-td-r3c2"><input type="text" class="csv-text-r3c2"></td>
+						<td class="csv-td-r3c3"><input type="text" class="csv-text-r3c3"></td>
+						<td class="csv-td-r3c4"><input type="text" class="csv-text-r3c4"></td>
+					</tr>
+				</table>
+				
+				<input type="file" value="Open..." id="csvEdit-open" onchange="loadCsvFile()" style="display: none;">
+			</div>
+		</div>
+		
+		<div class="window draggable" id="gamesFolder">
+			<div class="menuBar">
+				<span id="csvEdit-span" class="windowTitle">Games</span>
+				<a href="#" class="minimize">_</a> | <a href="#" class="close">X</a>
+			</div>
+			
+			<div class="content">
+				<div class="folderIcon">
+					<a href="#" id="cycloaLink"><img src="img/icon_cycloajs_2x.png" alt="CycolaJS"></a><br>
+					<span class="iconLabel">CycloaJS</span></a>
+				</div>
+			</div>
+		</div>
+		
+		
+		<div class="window draggable" id="progWindow">
+			<div class="menuBar">
+				<span id="csvEdit-span" class="windowTitle">Untitled</span>
+				<a href="#" class="minimize">_</a> | <a href="#" class="close">X</a>
+			</div>
+			
+			<div class="content">
+				<iframe src="files/CycloaJS-magistra/index.html">This requires frames</iframe>
+			</div>
+		</div>
+
+	</div>
+	
+	
+	<ul id="beginMenu" class="beginMenuLinks" style="display: none">
+		<li><div><a href="#">Link1</a></div></li>
+		<li><div><a href="#">Link2</a></div>
+			<ul>
+				<li><div>Sub link here</div></li>
+			</ul>
+		</li>
+		<li><div><a href="#">Link3</a></div></li>
+	</ul>
+	
+	<div id="taskBar">
+		<a href="#" class="toggleMenu" id="toggleBegin">Begin</a>
+		
+		<ul	id="minimizedApps">
+		</ul>
+		
+		<div id="rightTaskbar">
+			<span id="time">00:00</span>
+		</div>
+	</div>
+	
+	<script>
+		// javascript functions only here
+		
+		//This shows the window you pass to it. I've done this in javascript rather than jQuery because it's
+		// easier in js to pass the ID of the window we want to open, and I wanted this function to be modular
+		function showWindow(div){
+			document.getElementById(div).style.display = "block";
+			divClass = "." + div;
+			
+			// Check if there's a matching element in the taskbar and remove it if there is
+			var classTest = findFirstChildByClass(document.getElementById("minimizedApps"), div);
+			if(classTest != null){
+				classTest.parentNode.remove();
+			}
+			return false;
+		}
+		
+		// This is a function I found on Stackexhange that should pull any child element that matches a selector,
+		// rather than the first descendant of an element. This wouldn't be necessary if I were using jQuery for
+		// everything, but I'm having to fall back to javascript for some of it, so this is necessary.
+		function findFirstChildByClass(element, className) {
+        var foundElement = null, found;
+        function recurse(element, className, found) {
+            for (var i = 0; i < element.childNodes.length && !found; i++) {
+                var el = element.childNodes[i];
+                var classes = el.className != undefined? el.className.split(" ") : [];
+                for (var j = 0, jl = classes.length; j < jl; j++) {
+                    if (classes[j] == className) {
+                        found = true;
+                        foundElement = element.childNodes[i];
+                        break;
+                    }
+                }
+                if(found)
+                    break;
+                recurse(element.childNodes[i], className, found);
+            }
+        }
+        recurse(element, className, false);
+        return foundElement;
+    }
+	</script>
+</body>
+</html>
