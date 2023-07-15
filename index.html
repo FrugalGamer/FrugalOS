@@ -10,9 +10,24 @@
   
   <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
   <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+  <!--script src="script/exif-js.js"></script-->
+  <!-- Note: I'd like to add EXIF data parsing eventually, but I'm struggling with it atm, so I'm shelving it for now.-->
   <script>
   // jQuery fuctions only here
+  var dateOutput = "";
+  var month = "";
+  var day = "";
+  
 	  $( function() {
+		// This gets the date and stores it in a variable. This will probably be used in several places.
+		var d = new Date();
+
+		month = d.getMonth()+1;
+		day = d.getDate();
+
+		dateOutput = (month<10 ? '0' : '') + month + '/' +
+			(day<10 ? '0' : '') + day + "/" + d.getFullYear();
+
 	  // This makes all the windows draggable
 		$( ".draggable" ).draggable();
 	  
@@ -46,6 +61,12 @@
 		// This is for any element that has the .menu class
 		$(".menu").menu();
 		
+		// This is for the settings pane
+		$("#settings .bgPicker img").click(function() {
+			var url = $(this).attr("src");
+			$("body").css("background-image", "url(" + url + ")");
+			return false;
+		});
 
 		// This is for starting one of the games (Cycloa emulator). This should probably be moved to some place more logical
 
@@ -63,13 +84,29 @@
 		    }
 		});
 	  });
+	  
+	  // This is for photo viewing functions
+	  $('#openFile').change(function(){
+        const file = this.files[0];
+		var imgData = "";
+        if (file){
+          let reader = new FileReader();
+          reader.onload = function(event){
+            $('#exifData p').append(event.target.result);
+            $('#staticImage').attr('src', event.target.result);
+			imgData = event.target.result;
+          }
+          reader.readAsDataURL(file);
+        }
+      });
 	});
   </script>
 
 <!--- Link scripts for specific apps here ---->
-   <script src="scripts/downloadFile.js"></script>
+   <script src="script/downloadFile.js"></script>
    <script src="script/calc.js"></script>
    <script src="script/textpad.js"></script>
+   <script src="script/paganTools.js"></script>
    <script src="script/csvEdit.js"></script>
 </head>
 
@@ -77,27 +114,55 @@
     <div id="desktop">
 	<!------  Desktop icons are here ------->
 		<div id="desktopIcons">
-			<a href="#" onclick="showWindow('myComputer')"><img src="img/icon_mycomputer_2x.png" alt="My Computer"><br>
-			<span class="iconLabel">Computer</span></a><br><br>
-			
-			<a href="#" onclick="showWindow('welcomeTXT')"><img src="img/icon_text_2x.png" alt="Welcome.txt"><br>
-			<span class="iconLabel">Welcome.txt</a></span><br><br>
-			
-			<a href="#" onclick="showWindow('settings')"><img src="img/icon_settings_2x.png" alt="Settings"><br>
-			<span class="iconLabel">Settings</span></a><br><br>
-			
-			<a href="#" onclick="showWindow('textpad')"><img src="img/icon_textpad_2x.png" alt="Textpad"><br>
-			<span class="iconLabel">Textpad</span></a><br><br>
+			<div>
+				<p><a href="#" onclick="showWindow('myComputer')"><img src="img/icon_mycomputer_2x.png" alt="My Computer"><br>
+				<span class="iconLabel">Computer</span></a></p>
+				
+				<p><a href="#" onclick="showWindow('welcomeTXT')"><img src="img/icon_text_2x.png" alt="Welcome.txt"><br>
+				<span class="iconLabel">Welcome.txt</a></span></p>
+				
+				<p><a href="#" onclick="showWindow('settings')"><img src="img/icon_settings_2x.png" alt="Settings"><br>
+				<span class="iconLabel">Settings</span></a></p>
+				
+				<p><a href="#" onclick="showWindow('textpad')"><img src="img/icon_textpad_2x.png" alt="Textpad"><br>
+				<span class="iconLabel">Textpad</span></a></p>
 
-			<a href="#" onclick="showWindow('calculator')"><img src="img/icon_calculator_2x.png" alt="Calculator"><br>
-			<span class="iconLabel">Calculator</span></a><br><br>
+				<p><a href="#" onclick="showWindow('calculator')"><img src="img/icon_calculator_2x.png" alt="Calculator"><br>
+				<span class="iconLabel">Calculator</span></a></p>
 
-			<a href="#" onclick="showWindow('csvEdit')"><img src="img/icon_csv_2x.png" alt="csvEdit"><br>
-			<span class="iconLabel">csvEdit</span></a><br><br>
-			
-			<a href="#" onclick="showWindow('gamesFolder')"><img src="img/icon_games_2x.png" alt="gamesFolder"><br>
-			<span class="iconLabel">Games</span></a><br><br>
+				<p><a href="#" onclick="showWindow('csvEdit')"><img src="img/icon_csv_2x.png" alt="csvEdit"><br>
+				<span class="iconLabel">csvEdit</span></a></p>
+				
+				<p><a href="#" onclick="showWindow('gamesFolder')"><img src="img/icon_games_2x.png" alt="gamesFolder"><br>
+				<span class="iconLabel">Games</span></a></p>
+			</div>
+			<div>
+				<p><a href="#" onclick="showWindow('paganTools')"><img src="img/icon_pentacle_2x.png" alt="paganTools"><br>
+				<span class="iconLabel">Pagan Tools</span></a></p>
+				
+				<p><a href="#" onclick="showWindow('imageViewer')"><img src="img/icon_imageViewer_2x.png" alt="imageViewer"><br>
+				<span class="iconLabel">Image Viewer</span></a></p>
+			</div>
 		</div>
+		
+		<div class="window draggable off" id="imageViewer">
+			<div class="menuBar">
+				<span id="computerWindow" class="windowTitle">Image Viewer</span>
+				<a href="#" class="minimize">_</a> | <a href="#" class="close">X</a>
+			</div>
+			
+			<div class="content">
+				<!--canvas id="displayImage"></canvas><br-->
+				<img src="" id="staticImage"><br>
+				<input type="file" value="Open..." id="openFile">
+				
+				<details id="exifData">
+					<summary>Base64</summary>
+					<p><span id="makeAndModel"></span></p>
+				</details>
+			</div>
+
+		</div>		
 		
 		<div class="window draggable off" id="settings">
 			<div class="menuBar">
@@ -106,10 +171,15 @@
 			</div>
 			
 			<div class="content">
+				<div class="bgPicker">
+					<h2>Backgrounds</h2>
+
+					<p><a href=""><img src="img/background1.jpg"></a> <a href=""><img src="img/CrystallinePlain.png"></a> <a href=""><img src="img/CyrPoint.jpg"></a> <a href=""><img src="img/DarkSeas.png"></a> <a href=""><img src="img/Decadence.png"></a> <a href=""><img src="img/IridescentSapdrinker.png"></a> <a href=""><img src="img/lapse.png"></a> <a href=""><img src="img/TerrideCrisis.png"></a> <a href=""><img src="img/TheFallofGharat.png"></a> <a href=""><img src="img/HappyHalloween.png"></a></p>
+				</div>
 				To be added:
 				<ul>
 					<li>Font changes (size, color, family)</li>
-					<li>Desktop image</li>
+					<li><strike>Desktop image</strike></li>
 					<li>color schemes</li>
 				</ul>
 			</div>
@@ -131,13 +201,20 @@
 							</ul>
 						</li>
 						<li><a href="#">Edit</a></li>
-						<li><a href="#">About</a></li>
+						<li><a href="#" id="textpad-about-menu">About</a></li>
 					</ul>
+				</div>
+				<div class="uiButtons">
+					<input type="button" value="H1" id="H1" class="markdown"> <input type="button" value="H2" id="H2" class="markdown"> <input type="button" value="H3" id="H3" class="markdown"> <input type="button" value="Bold" id="bold" class="markdown"> <input type="button" value="Italic" id="italic" class="markdown"> <input type="button" value="hr" id="hr" class="markdown">
 				</div>
 				<textarea id="textpad_wa"></textarea>
 				<div class="uiButtons">
 					<input type="button" value="Clear" id="textpad-clear"> <input type="button" value="Save" id="textpad-save"> <input type="file" value="Open..." id="textpad-open" onchange="loadTxtFile()" style="display: none;">
 				</div>
+			</div>
+			
+			<div class="off" id="aboutDialogue" title="About Textpad">
+				<p>TextPad is a simple plain text and markdown editor that I've put together as a programming learning tool. You can currently use it to create, open, and edit plain text files.</p>
 			</div>
 			
 			<div class="off" id="modalDialogue" title="Warning!">
@@ -183,15 +260,18 @@
 				<h2>To Do List</h2>
 				
 				<ul>
-					<li>Make window code modal</li>
+					<li><strike>Make window code modular</strike></li>
 					<li><strike>Implement close and minimize menu buttons</strike></li>
 					<li><strike>Add desktop icons</strike></li>
 					<li><strike>Add/Program calculator</strike></li>
 					<li><strike>Add save/open function to TextPad</strike></li>
-					<li>Add basic markdown buttons to Textpad</li>
-					<li>Add backgrounds and switcher</li>
+					<li><strike>Add basic markdown buttons to Textpad</strike> - Next step is to add an interpreter</li>
+					<li><strike>Add backgrounds and switcher</strike></li>
 					<li><strike>Add CSV editor</strike></li>
-					<li>Add image viewer</li>
+					<li><strike>Add image viewer</strike> - Would like to add more features eventually</li>
+					<li>Fix CsvEdit importing function</li>
+					<li>Get started on a pixel editor</li>
+					<li>Get started on a solitaire/minesweeper game</li>
 				</ul>	
 			</div>
 		</div>
@@ -303,29 +383,59 @@
 			</div>
 		</div>
 		
-		<div class="window draggable" id="gamesFolder">
+		<div class="window draggable off" id="gamesFolder">
 			<div class="menuBar">
 				<span id="csvEdit-span" class="windowTitle">Games</span>
 				<a href="#" class="minimize">_</a> | <a href="#" class="close">X</a>
 			</div>
 			
 			<div class="content">
-				<div class="folderIcon">
-					<a href="#" id="cycloaLink"><img src="img/icon_cycloajs_2x.png" alt="CycolaJS"></a><br>
-					<span class="iconLabel">CycloaJS</span></a>
-				</div>
+				<iframe src="games.html">This requires frames</iframe>
 			</div>
 		</div>
-		
-		
-		<div class="window draggable" id="progWindow">
+
+		<div class="window draggable off" id="paganTools">
 			<div class="menuBar">
-				<span id="csvEdit-span" class="windowTitle">Untitled</span>
+				<span id="csvEdit-span" class="windowTitle">Pagan Tools</span>
 				<a href="#" class="minimize">_</a> | <a href="#" class="close">X</a>
 			</div>
 			
 			<div class="content">
-				<iframe src="files/CycloaJS-magistra/index.html">This requires frames</iframe>
+				<h2>Wheel of the Year</h2>
+				
+				<div id="wheelOfTheYear">
+					<img src="img/wheelOfTheYear.png" alt="Wheel of the Year illustration"><br>
+					<span class="currentDate"></span><br>
+					<b>Current lunar phase:</b> <span class="lunarPhase"></span><br>
+					<b>Next full moon:</b> <span class="nextFull"></span><br>
+					<b>Next Sabbat:</b> <span class="nextSabbat"></span><br>
+				</div>
+			
+				<h2>Runes</h2>
+				<div class="runes">
+					<h3>Witches Runes</h3>
+					<div id="witchesRunes">
+						<span class="error" style="display: none;">ERROR: Please enter your intention</span><br>
+						<input type="text" value="Enter intention" class="intention"><br><input type="button" value="Draw rune" onclick="pullWitchRune()"> <input type="button" value="clear" onclick="clearDiv('wruneResult')">
+						<div id="wruneResult"></div>
+						<p>You can pull as many runes as you like by clicking the button above. Hover over each rune to see its meaning</p>
+					</div>
+
+					<h3>City Runes</h3>
+					<div id="cityRunes">
+						<p>City Runes were created by Christopher Penczack in his book <i>City Magick,</i> and I think are a fun way to work modern world symbols into one's divination practice.</p>
+						<span class="error" style="display: none;">ERROR: Please enter your intention</span><br>
+						<input type="text" value="Enter intention" class="intention"><br><input type="button" value="Draw rune" onclick="pullCityRune()"> <input type="button" value="clear" onclick="clearDiv('cruneResult')">
+						<div id="cruneResult"></div>
+						<p>You can pull as many runes as you like by clicking the button above. Hover over each rune to see its meaning</p>
+					</div>		
+
+					<h3>Fthark</h3>
+					<div>
+						<p>Stuff will go here</p>
+					</div>					
+				</div>
+				<h2>Tarot Reading tools</h2>
 			</div>
 		</div>
 
@@ -394,6 +504,14 @@
         recurse(element, className, false);
         return foundElement;
     }
-	</script>
+
+    // Just a simple function that clears any element with a button press. Can accept classes or IDs
+    function clearDiv(div){
+    	if($("#" + div))
+    		$("#" + div).empty();
+    	else
+    		$("." + div).empty();
+    }
+</script>
 </body>
 </html>
