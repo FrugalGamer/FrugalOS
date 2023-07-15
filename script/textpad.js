@@ -45,13 +45,18 @@ function loadTxtFile() {
   }
 }
 
-
-
 // This is the code for the textpad. It must be loaded after jquery and jquery ui because it depends on both of them.
 $( function() {
 	$("#modalDialogue").dialog({
 		autoOpen: false
 	}); 
+	$("#aboutDialogue").dialog({
+		autoOpen: false
+	});
+	
+	$("#textpad-about-menu").click(function() {
+		$("#aboutDialogue").dialog("open");
+	});
 	
 	// This is the code for the Clear button
 	$("#textpad-clear").click(function(){
@@ -79,6 +84,41 @@ $( function() {
 	// that triggers the file submit input (hidden)
 	$("#textpad-open-menu").click(function(){
 		$("#textpad-open").trigger("click");
+	});
+	
+	// This is for the Markdown buttons at the top and will add formatting when clicked.
+	$('.markdown').click(function() {
+		const element = $('#textpad_wa');
+		const caretPos = element[0].selectionStart;
+		const textAreaTxt = element.val();
+		const id = $(this).attr("id");
+		var formatting = "";
+		
+		switch(id){
+			case "H1":
+				formatting = "#";
+				break;
+			case "H2":
+				formatting = "##";
+				break;
+			case "H3":
+				formatting = "###";
+				break;
+			case "bold":
+				formatting = "**";
+				break;
+			case "italic":
+				formatting = "*";
+				break;
+			case "hr":
+				formatting = "---";
+				break;
+		}
+		
+		const txtToAdd = formatting;
+
+		element.val(textAreaTxt.substring(0, caretPos) + txtToAdd + textAreaTxt.substring(caretPos) );
+		//$("textpad_wa").selectionStart = caretPos + txtToAdd.length;
 	});
 	
 });
