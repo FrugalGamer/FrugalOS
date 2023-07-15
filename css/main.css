@@ -1,5 +1,7 @@
 body { 
 	background-color: #6ea6a8;
+	background-image: url("../img/Decadence.png");
+	background-size: 100%;
 	padding: 0;
 	margin: 0;
 }
@@ -7,33 +9,76 @@ body {
 body, p, div {
 	font-family: monospace;
 }
+input[type=button], input[type=file] {
+	background: #df5e88;
+	border: 1px solid #97133e;
+	border-radius: 8px;
+	font-family: monospace;
+	padding: 0.3em;
+	min-width: 75px;
+	box-shadow: inset 1px 1px 0px 0px #f6ab6c, inset -1px -1px 0px 0px #97133e;
+}
+input[type=text] {
+	font-family: monospace;
+	padding: 0.3em;
+	border-radius: 8px;
+	margin-bottom: 0.5em;
+}
+
+details {
+	margin: 1em 0;
+	max-width: 100%;
+	background-color: #fffce0;
+	overflow: auto;
+}
+	summary { font-weight: bold; border-bottom: 1px solid #97133e; background-color: #f6ab6c; padding: 1em; }
+	details p { padding: 1em; }
 
 div#desktopIcons {
 	float: right;
 	text-align: center;
 	padding: 0.5em;
+	margin-bottom: 1.5em;
 } 
+	#desktopIcons div { float: right; margin-right: 1em; }
+	#desktopIcons p { display: block; }
 	#desktopIcons span, #desktopIcons a span { background-color: #ffffff; border: 1px solid #353535; text-decoration: none; }
 div.window {
 	border: 1px solid #353535;
 	width: 600px;
-	position: relative;
+	position: absolute;
+	height: auto;
 }
 	div.menuBar {
 		border-bottom: 1px solid #353535;
 		background-color: #df5e88;
 		padding: 1em;
+		overflow: hidden;
+		box-shadow: inset 1px 1px 0px 0px #f6ab6c, inset -1px -1px 0px 0px #97133e;
 	}
 		div.menuBar span { 
 			display: inline-block;
 			text-align: center;
-			width: calc(100% - 50px);
+			width: calc(100% - 70px);
 			font-weight: bold;
 		}
 			div.menuBar a {
 				text-decoration: none;
 				font-weight: bold;
 				font-size: 1.1em;
+				display: inline-block;
+			}
+			div.menuBar a.minimize {
+				background-image: url("../img/button_minimize.png");
+				width: 18px;
+				height: 19px;
+				text-indent: -600px;
+			}
+			div.menuBar a.close {
+				background-image: url("../img/button_close.png");
+				width: 18px;
+				height: 19px;
+				text-indent: -600px;
 			}
 	div.content {
 		background-color: #f6efa6;
@@ -103,11 +148,15 @@ div.window {
 .off { display: none; }	
 
 /* ======== Specific window styles here ======== */
+#imageViewer #staticImage { max-width: 100%; height: auto; }
+
 #textpad_wa {
 	width: calc(100% - 1em);
 	min-height: 300px;
 }
-	#textpad .uiButtons { margin-top: 0.5em; }
+	#textpad .uiButtons { margin-top: 0.5em; margin-bottom: 0.5em; }
+
+#settings .bgPicker img { width: 100px; height: 100px; border: 1px solid #000; }
 
 #calculator {
 	width: 200px;
@@ -117,7 +166,7 @@ div.window {
 		background: #df5e88;
 	}
 	#calculator #calc_result { background-color: #fff; padding: 0.5em; display: block; width: 90%; border: 1px solid #353535; }
-	#calculator input[type='button'], #calculator input[type='submit'] { font-weight: bold; font-size: 1.2em; padding: 0.5em; background: #97133e; color: #fff; width: 40px; }
+	#calculator input[type='button'], #calculator input[type='submit'] { font-weight: bold; font-size: 1.2em; padding: 0.5em; background: #97133e; color: #fff; min-width: 40px; width: 40px; }
 	
 #csvEdit table.csvDisplay{
 	width: 100%;
@@ -129,8 +178,13 @@ div.window {
 			#csvEdit table.csvDisplay tr.even { background: #fddae6; }
 	#csvEdit table.csvDisplay tr:hover { background: #c1eced; }
 
-#progWindow iframe { width: 100%; min-height: 350px; border: 0px; }
-}
+#gamesFolder iframe { width: 100%; min-height: 500px; border: 0px; }
+
+#paganTools { overflow: auto; }
+	#paganTools #wheelOfTheYear { text-align: center; font-size: 1.2em; }
+	#wruneResult { margin-top: 1em; }
+
+#paganTools .currentDate { font-weight: bold; font-size: 1.2em; color: #97133e; } 
 	
 /* ======== jQuery overrides go here ======== */
 	.ui-dialog-titlebar.ui-widget-header { background: #df5e88 url("images/ui-bg_highlight-soft_75_cccccc_1x100.png") 50% 50% repeat-x; }
@@ -145,3 +199,5 @@ div.window {
 		min-width: 75px;
 	} 
 		.ui-widget input[type=button]:hover { background-color: #faa5c1; }
+
+	.ui-accordion .ui-accordion-header { background: #f6ab6c; font-family: monospace; }	
