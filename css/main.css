@@ -24,6 +24,7 @@ input[type=text] {
 	border-radius: 8px;
 	margin-bottom: 0.5em;
 }
+select { font-family: monospace; font-size: 1em; background-color: #f6ab6c; padding: 0.4em; border: 1px solid #000; border-radius: 10px; }
 
 details {
 	margin: 1em 0;
@@ -72,13 +73,13 @@ div.window {
 				background-image: url("../img/button_minimize.png");
 				width: 18px;
 				height: 19px;
-				text-indent: -600px;
+				text-indent: -900px;
 			}
 			div.menuBar a.close {
 				background-image: url("../img/button_close.png");
 				width: 18px;
 				height: 19px;
-				text-indent: -600px;
+				text-indent: -900px;
 			}
 	div.content {
 		background-color: #f6efa6;
@@ -146,6 +147,7 @@ div.window {
 			#minimizedApps a:visited { color: #5b132a; }
 	
 .off { display: none; }	
+.clear { width: 100%; clear: both; display: block; }
 
 /* ======== Specific window styles here ======== */
 #imageViewer #staticImage { max-width: 100%; height: auto; }
@@ -161,12 +163,16 @@ div.window {
 #calculator {
 	width: 200px;
 }
-	#calculator>.menuBar>span { width: calc(100% - 50px); }
+	#calculator>.menuBar>span { width: calc(100% - 70px); }
 	#calculator>content {
 		background: #df5e88;
 	}
 	#calculator #calc_result { background-color: #fff; padding: 0.5em; display: block; width: 90%; border: 1px solid #353535; }
 	#calculator input[type='button'], #calculator input[type='submit'] { font-weight: bold; font-size: 1.2em; padding: 0.5em; background: #97133e; color: #fff; min-width: 40px; width: 40px; }
+	
+	#calculator #calc-memory { padding: 0.5em; background-color: #fffce0; }
+		#calculator #calc-memory h2 { border-bottom: 1px solid #000; width: 100%; display: block; margin-bottom: 0; padding-bottom: 0; }
+		#calculator #calc-memory .calc-clear { font-size: 0.8em; font-style: italic; }
 	
 #csvEdit table.csvDisplay{
 	width: 100%;
@@ -180,11 +186,20 @@ div.window {
 
 #gamesFolder iframe { width: 100%; min-height: 500px; border: 0px; }
 
-#paganTools { overflow: auto; }
+#paganTools .content { overflow: scroll; max-height: 600px; }
 	#paganTools #wheelOfTheYear { text-align: center; font-size: 1.2em; }
 	#wruneResult { margin-top: 1em; }
+	#fruneResult { width: 100%; clear: both; }
+	#fruneResult .frune { width: 30%; float: left; border: 1px solid #000; border-radius: 10px; text-align: center; padding: 0.4em; }
 
 #paganTools .currentDate { font-weight: bold; font-size: 1.2em; color: #97133e; } 
+
+#ftharkReader { width: 760px; }
+	#ftharkReader .content { overflow: scroll; max-height: 600px; }
+	#ftharkSpreadResult table { margin-top: 1em; border: 1px solid #000; width: 100%; }
+	#ftharkSpreadResult table td { text-align: center; }
+	#ftharkSpreadResult table td#runeresult { border-top: 1px solid #000; padding-top: 1em; }
+}
 	
 /* ======== jQuery overrides go here ======== */
 	.ui-dialog-titlebar.ui-widget-header { background: #df5e88 url("images/ui-bg_highlight-soft_75_cccccc_1x100.png") 50% 50% repeat-x; }
