@@ -139,7 +139,10 @@
 			<div>
 				<p><a href="#" onclick="showWindow('paganTools')"><img src="img/icon_pentacle_2x.png" alt="paganTools"><br>
 				<span class="iconLabel">Pagan Tools</span></a></p>
-				
+
+				<p><a href="#" onclick="showWindow('ftharkReader')"><img src="img/icon_fthark_2x.png" alt="ftharkReader"><br>
+				<span class="iconLabel">Fthark Reader</span></a></p>
+
 				<p><a href="#" onclick="showWindow('imageViewer')"><img src="img/icon_imageViewer_2x.png" alt="imageViewer"><br>
 				<span class="iconLabel">Image Viewer</span></a></p>
 			</div>
@@ -272,6 +275,8 @@
 					<li>Fix CsvEdit importing function</li>
 					<li>Get started on a pixel editor</li>
 					<li>Get started on a solitaire/minesweeper game</li>
+					<li>Add search function to TextPad and CSVEdit</li>
+					<li><strike>Finish adding mem function to calculator</strike></li>
 				</ul>	
 			</div>
 		</div>
@@ -287,7 +292,7 @@
 					<ul class="menu">
 						<li><a href="#">File</a>
 						<ul>
-							<li><a href="#">Show memory</a></li>
+							<li><a href="#" id="calc-show-mem">Memory</a></li>
 						</ul></li>
 					</ul>
 				</div>
@@ -319,6 +324,12 @@
 						<td><input type="submit" value="="></td>
 					</tr>
 				</table>
+				
+				<div id="calc-memory" class="off">
+					<h2>Memory</h2>
+					<a href="" class="clear-clear">(clear)</a><br>
+					<span id="calc-mem-display"></span>
+				</div>
 			</div>
 		</div>
 
@@ -429,13 +440,54 @@
 						<div id="cruneResult"></div>
 						<p>You can pull as many runes as you like by clicking the button above. Hover over each rune to see its meaning</p>
 					</div>		
-
-					<h3>Fthark</h3>
-					<div>
-						<p>Stuff will go here</p>
-					</div>					
 				</div>
 				<h2>Tarot Reading tools</h2>
+			</div>
+		</div>
+
+		<div class="window draggable off" id="ftharkReader">
+			<div class="menuBar">
+				<span id="csvEdit-span" class="windowTitle">Fthark Reader</span>
+				<a href="#" class="minimize">_</a> | <a href="#" class="close">X</a>
+			</div>
+			
+			<div class="content">
+				<h3>Fthark</h3>
+				<div id="ftharkRunes">
+					<p>You can pull as many runes as you like by clicking the button below. Their meaning and other info will be displayed below.</p>
+					<input type="button" value="Draw single rune" onclick="displayFtharkRune()"> <input type="button" value="clear" onclick="clearDiv('fruneResult')">
+					<div id="fruneResult"></div>
+
+					<div class="clear"><hr></div>
+
+					<p>Here you can pull specific spreads</p>
+					<select type="dropdown" value="Choose spread" id="spreadName">
+						<option value="threerune">Three rune spread</option>
+						<option value="fourdwarves">The four dwarves</option>
+						<option value="crossofthor">The Cross of Thor</option>
+						<option value="fiveelements">The five elements</option>
+						<option value="fiveelements2">The five elements (alt)</option>
+						<option value="fourdwarves2">The four dwarves (alt)</option>
+						<option value="situation">Situation spread</option>
+						<option value="persona">The persona</option>
+						<option value="celticcross">Celtic cross</option>
+						<option value="runiccross" disabled>Runic cross</option>
+						<option value="career" disabled>Career mirror</option>
+						<option value="sevenworlds" disabled>Seven worlds spread</option>
+						<option value="combinedworlds" disabled>Combined worlds spread</option>
+						<option value="mimirshead" disabled>Mimir's Head</option>
+						<option value="mimirshead2" disabled>Mimir's Head (alt)</option>
+						<option value="ninegrid" disabled>Grid of Nine</option>
+						<option value="treeoflife" disabled>Tree of Life</option>
+						<option value="cosmicaxis" disabled>Cosmic axis</option>
+						<option value="fourquarters" disabled>The four quarters</option>
+						<option value="celticknight" disabled>The Celtic Knight Cross</option>
+						<option value="runicwheel" disabled>The runic wheel</option>
+					</select>
+					<input type="button" value="Draw spread" onclick="pullFtharkSpread()"> <input type="button" value="clear" onclick="clearDiv('ftharkSpreadResult')">
+
+					<div id="ftharkSpreadResult"></div>
+				</div>
 			</div>
 		</div>
 
