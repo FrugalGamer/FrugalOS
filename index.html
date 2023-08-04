@@ -7,6 +7,7 @@
   
   <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.13.2/themes/smoothness/jquery-ui.css">
   <link type="text/css" rel="stylesheet" href="css/main.css">
+  <link type="text/css" rel="stylesheet" href="css/paganTools.css">
   
   <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
   <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
@@ -17,6 +18,7 @@
   var dateOutput = "";
   var month = "";
   var day = "";
+  var zindex = 1;
   
 	  $( function() {
 		// This gets the date and stores it in a variable. This will probably be used in several places.
@@ -28,8 +30,12 @@
 		dateOutput = (month<10 ? '0' : '') + month + '/' +
 			(day<10 ? '0' : '') + day + "/" + d.getFullYear();
 
-	  // This makes all the windows draggable
+	  // This makes all the windows draggable and brings them to focus when they're selected
 		$( ".draggable" ).draggable();
+		$(".draggable").click(function() {
+			$(this).css({"z-index": zindex+1});
+			zindex++;
+		});
 	  
 	  // This is for closing windows
 		$(".close").click(function() {
@@ -254,7 +260,9 @@
 			<div class="content">
 				<h1>Welcome to FrugalOS</h1>
 
-				<p>This document will change throughout time as I add more to it. <a href="#" title="This should popup on mouseover">This is a test tooltip.</a></p>
+				<p>FrugalOS is a combination programming practice/art experiment, and is my attempt to make a static workspace for myself using only raw HTML and Javascript, with an emphasis on open formats and sources.</p>
+				
+				<p>This document will change throughout time as I add more to it.</p>
 
 				<h2>Update Log</h2>
 
@@ -277,6 +285,7 @@
 					<li>Get started on a solitaire/minesweeper game</li>
 					<li>Add search function to TextPad and CSVEdit</li>
 					<li><strike>Finish adding mem function to calculator</strike></li>
+					<li>Add column/row names and sorting function to CSVEdit</li>
 				</ul>	
 			</div>
 		</div>
@@ -349,7 +358,7 @@
 							<li><a href="#" class="save">Save</a></li>
 							<li><a href="#" class="open">Open</a></li>
 						</ul></li>
-						<li><a href="#" class="help">Help</a></li>
+						<li><a href="#" class="help">About</a></li>
 					</ul>
 				</div>
 				
@@ -391,6 +400,10 @@
 				</table>
 				
 				<input type="file" value="Open..." id="csvEdit-open" onchange="loadCsvFile()" style="display: none;">
+				
+				<div class="off" id="csv-aboutDialogue" title="About CSVEdit">
+				<p>CSVEdit is a simple CSV editor that I've built so that I could learn programming. Currently, it allows you to create and save CSV files, and more features will be added soon.</p>
+			</div>
 			</div>
 		</div>
 		
@@ -445,48 +458,259 @@
 			</div>
 		</div>
 
-		<div class="window draggable off" id="ftharkReader">
+		<div class="window draggable resizable off" id="ftharkReader">
 			<div class="menuBar">
 				<span id="csvEdit-span" class="windowTitle">Fthark Reader</span>
 				<a href="#" class="minimize">_</a> | <a href="#" class="close">X</a>
 			</div>
 			
 			<div class="content">
-				<h3>Fthark</h3>
+				<h3>Fthark Reader</h3>
+				<p>Fthark Reader is an application that aids in reading and learning about the Elder Fthark runes. You can draw a single rune for any reading you like, or you can choose from a number of different spreads to read from. There will also eventually be a dictionary section that details different info about the runes for reference.</p>
+				
+				<p>Most of the information here has been sourced from <i>Reading the Runes: A Beginner's Guide</i> by Kim Farnell.</p>
+				
 				<div id="ftharkRunes">
-					<p>You can pull as many runes as you like by clicking the button below. Their meaning and other info will be displayed below.</p>
-					<input type="button" value="Draw single rune" onclick="displayFtharkRune()"> <input type="button" value="clear" onclick="clearDiv('fruneResult')">
-					<div id="fruneResult"></div>
+					<ul>
+						<li><a href="#singleRunes">Single Runes</a></li>
+						<li><a href="#runeSpreads">Rune Spreads</a></li>
+						<li><a href="#runeDictionary">Rune Dictionary</a></li>
+					</ul>
+				
+					<div id="singleRunes">
+						<h3>Single Runes</h3>
+						<p>You can pull as many runes as you like by clicking the "Draw single rune" button, but they will not be unique as they are in the spreads section. Their meaning and other info will be displayed below.</p>
+						<input type="button" value="Draw single rune" onclick="displayFtharkRune()"> <input type="button" value="clear" onclick="clearDiv('fruneResult')">
+						<div id="fruneResult"></div>
+					</div>
 
-					<div class="clear"><hr></div>
+					<div id="runeSpreads">
+						<h3>Rune Spreads</h3>
+						
+						<p>Here you can pull specific spreads</p>
+						<select type="dropdown" value="Choose spread" id="spreadName">
+							<option value="threerune">Three rune spread</option>
+							<option value="fourdwarves">The four dwarves</option>
+							<option value="crossofthor">The Cross of Thor</option>
+							<option value="fiveelements">The five elements</option>
+							<option value="fiveelements2">The five elements (alt)</option>
+							<option value="fourdwarves2">The four dwarves (alt)</option>
+							<option value="situation">Situation spread</option>
+							<option value="persona">The persona</option>
+							<option value="celticcross">Celtic cross</option>
+							<option value="runiccross">Runic cross</option>
+							<option value="career">Career mirror</option>
+							<option value="sevenworlds">Seven worlds spread</option>
+							<option value="combinedrunes">Combined runes spread</option>
+							<option value="mimirshead">Mimir's Head</option>
+							<option value="mimirshead2">Mimir's Head (alt)</option>
+							<option value="ninegrid">Grid of Nine</option>
+							<option value="treeoflife">Tree of Life</option>
+							<option value="cosmicaxis">Cosmic axis</option>
+							<option value="fourquarters">The four quarters</option>
+							<option value="celticknight" disabled>The Celtic Knight Cross</option>
+							<option value="runicwheel">The runic wheel</option>
+						</select>
+						<input type="button" value="Draw spread" onclick="pullFtharkSpread()"> <input type="button" value="clear" onclick="clearDiv('ftharkSpreadResult')"> <input type="button" value="Save as csv" onclick="" id="saveSpreadTxt"> <input type="button" value="Save as image">
 
-					<p>Here you can pull specific spreads</p>
-					<select type="dropdown" value="Choose spread" id="spreadName">
-						<option value="threerune">Three rune spread</option>
-						<option value="fourdwarves">The four dwarves</option>
-						<option value="crossofthor">The Cross of Thor</option>
-						<option value="fiveelements">The five elements</option>
-						<option value="fiveelements2">The five elements (alt)</option>
-						<option value="fourdwarves2">The four dwarves (alt)</option>
-						<option value="situation">Situation spread</option>
-						<option value="persona">The persona</option>
-						<option value="celticcross">Celtic cross</option>
-						<option value="runiccross" disabled>Runic cross</option>
-						<option value="career" disabled>Career mirror</option>
-						<option value="sevenworlds" disabled>Seven worlds spread</option>
-						<option value="combinedworlds" disabled>Combined worlds spread</option>
-						<option value="mimirshead" disabled>Mimir's Head</option>
-						<option value="mimirshead2" disabled>Mimir's Head (alt)</option>
-						<option value="ninegrid" disabled>Grid of Nine</option>
-						<option value="treeoflife" disabled>Tree of Life</option>
-						<option value="cosmicaxis" disabled>Cosmic axis</option>
-						<option value="fourquarters" disabled>The four quarters</option>
-						<option value="celticknight" disabled>The Celtic Knight Cross</option>
-						<option value="runicwheel" disabled>The runic wheel</option>
-					</select>
-					<input type="button" value="Draw spread" onclick="pullFtharkSpread()"> <input type="button" value="clear" onclick="clearDiv('ftharkSpreadResult')">
-
-					<div id="ftharkSpreadResult"></div>
+						<div id="ftharkSpreadResult"></div>
+					</div>
+					
+					<div id="runeDictionary">
+						<h3>Rune Dictionary</h3>
+						
+						<fieldset>
+							<legend>Frey's Aett</legend>
+							
+							<table border=1>
+								<tr>
+									<td>
+										<img src="img/runes/fthark_fehu.png" alt="fehu"><br>
+										<b>Fehu</b><br>
+										<i>Sound: "f"</i>
+									</td>
+									<td><b>Positive Meaning:</b> From the root word for cattle, this rune represents wealth, property, and the success of your plans and workings.</td>
+									<td><b>Reversed Meaning:</b> The reversed form of this rune can indicate financial troubles, poverty, or greed. You should be careful not to waste resources and to scrutinize any offers coming your way.</td>
+								</tr><tr>
+									<td>
+										<img src="img/runes/fthark_uruz.png" alt="uruz"><br>
+										<b>Uruz</b><br>
+										<i>Sound: "oo"</i>
+									</td>
+									<td><b>Positive Meaning:</b> Represents the Auroch and all the power that comes with it. This rune indicates creative power and change. Uruz represents energy, passion, vitality, fertility, and the unconscious. It is mostly concerned with the irrational and instinctive sides of our nature</td>
+									<td><b>Reversed Meaning:</b> Reversed, Uruz stands for brutality, harshness, and hatred. It is associated with abuse and weak wills. Take stock of your self-esteem and make sure you do not stumble.</td>
+								</tr><tr>
+									<td>
+										<img src="img/runes/fthark_thurisaz.png" alt="thurisaz"><br>
+										<b>Thurisaz</b><br>
+										<i>Sound: "th"</i>
+									</td>
+									<td><b>Positive Meaning:</b> Represents thorns, destruction, and sometimes defenses. In its positive form here, it represents the destruction that needs to come before change can happen.</td>
+									<td><b>Reversed Meaning:</b> Stubbornnes and an unwillingness to listen to information</td>
+								</tr><tr>
+									<td>
+										<img src="img/runes/fthark_ansuz.png" alt="ansuz"><br>
+										<b>Ansuz</b><br>
+										<i>Sound: "f"</i>
+									</td>
+									<td><b>Positive Meaning:</b> This rune represents the Aesir, the gift of the runes to people, as well as inspiration and creativity. In a reading it can indicate wisdom, or someone who holds it, and the use of language and clear speech.</td>
+									<td><b>Reversed Meaning:</b> Dishonesty, lies, and trickery are about. You should seek second opinions.</td>
+								</tr><tr>
+									<td>
+										<img src="img/runes/fthark_raido.png" alt="raido"><br>
+										<b>Raido</b><br>
+										<i>Sound: "r"</i>
+									</td>
+									<td><b>Positive Meaning:</b> This rune represents the wheel, and as such can indicate a journey and travel, whether physical or spiritual. If you are planning on travelling, the appearance of this rune can be a good omen.</td>
+									<td><b>Reversed Meaning:</b> Reversed, Raido indicates that it is not a good time to travel or begin a journey. It can also indicate that your goals are not well chosen.</td>
+								</tr><tr>
+									<td>
+										<img src="img/runes/fthark_kaunaz.png" alt="kaunaz"><br>
+										<b>Kaunaz</b><br>
+										<i>Sound: "k"</i>
+									</td>
+									<td><b>Positive Meaning:</b> This rune represents fire and inflammation, and has often been associated with torches and ulcers. In its positive form it indicates illumination and understanding. It can also indicate a good attitude and health.</td>
+									<td><b>Reversed Meaning:</b> Kaunaz reversed can indicate that you have missed an opportunity or had poor judgement. A relationship you have may been coming to an end.</td>
+								</tr><tr>
+									<td>
+										<img src="img/runes/fthark_gebo.png" alt="gebo"><br>
+										<b>Gebo</b><br>
+										<i>Sound: "g"</i>
+									</td>
+									<td><b>Positive Meaning:</b> Represents gifts and generosity, as well as partnership and vows or commitment. This may mean that you will be experiencing the benefits of a good partnership, or to a sense of unity with what is currently around us./td>
+									<td><b>Reversed Meaning:</b> Gebo cannot be reversed.</td>
+								</tr><tr>
+									<td>
+										<img src="img/runes/fthark_wunjo.png" alt="wunjo"><br>
+										<b>Wunjo</b><br>
+										<i>Sound: "v or w"</i>
+									</td>
+									<td><b>Positive Meaning:</b> Bliss, happiness, and joy, this is a very positive rune that can show that relief is coming, or that you will soon be able to enjoy a break from life&apos;s chaos. It emphasizes harmony and balance with the world.</td>
+									<td><b>Reversed Meaning:</b> When this rune is reversed, it indicates unrealistic enthusiasm or impractical expectations.</td>
+								</tr>
+							</table>
+						</fieldset>
+						
+						<fieldset>
+							<legend>Hagal's Aett</legend>
+							
+							<table border=1>
+								<tr>
+									<td>
+										<img src="img/runes/fthark_hagalaz.png" alt="wunjo"><br>
+										<b>Hagalaz</b><br>
+										<i>Sound: "h"</i>
+									</td>
+									<td><b>Positive Meaning:</b> This rune means hail (as in freezing rain) and represents the primal chaos of nature. It can mean difficult times are coming and that you will be tested. It is associated with Ymir and winter.</td>
+									<td><b>Reversed Meaning:</b> Chaos and destruction, and a loss of shelter.</td>		
+								</tr><tr>
+									<td>
+										<img src="img/runes/fthark_nauthiz.png" alt="nuathiz"><br>
+										<b>Nauthiz</b><br>
+										<i>Sound: "n"</i>
+									</td>
+									<td><b>Positive Meaning:</b> Nauthiz is associated with the Nornir, and as such represents the fates that shape our world. Because it focuses on the differences between wants and needs, it can mean you are in for some challenges.</td>
+									<td><b>Reversed Meaning:</b> In its reversed form, Nauthiz means you are soon to be tested. It is not time to make hasty judgements.</td>
+								</tr><tr>
+									<td>
+										<img src="img/runes/fthark_perth.png" alt="perth"><br>
+										<b>Perth</b><br>
+										<i>Sound: "p"</i>
+									</td>
+									<td><b>Positive Meaning:</b> This rune is associated with Freya and the vulva. It represents initiation and the Nornir, and so can indicate that you will be tested. It is also the rune of problem solving and memory.</td>
+									<td><b>Reversed Meaning:</b> When Pertho is reversed, it can indicate that you are about to experience an unpleasant surprise, perhaps from your past. You may have to right your wrongs.</td>
+								</tr><tr>
+									<td>
+										<img src="img/runes/fthark_algiz.png" alt="algiz"><br>
+										<b>Algiz</b><br>
+										<i>Sound: "z"</i>
+									</td>
+									<td><b>Positive Meaning:</b> This rune represents the protection of the Valkryies, and was often used as a protection symbol. It can indicate warnings and support, and you should take heed of what close friends are trying to protect your from.</td>
+									<td><b>Reversed Meaning:</b> In its negative form Algiz describes vulnerability, danger and forbidden acts. Pay attention to how people are acting around you.</td>
+								</tr><tr>
+									<td>
+										<img src="img/runes/fthark_sowelo.png" alt="sowelo"><br>
+										<b>Sowelo</b><br>
+										<i>Sound: "s"</i>
+									</td>
+									<td><b>Positive Meaning:</b> Sowelo is the sun rune and the balancing force to Isa. It is associated with female energy and represents life-giving warmth and happiness. Keep in mind that too much can result in drought and feeling burned out.</td>
+									<td><b>Reversed Meaning:</b> When reversed, Sowelo can indicate burnout or overconfidence.</td>
+								</tr>
+							</table>
+						</fieldset>
+						
+						<fieldset>
+							<legend>Tyr's Aett</legend>
+							
+							<table border=1>
+								<tr>
+									<td>
+										<img src="img/runes/fthark_teiwaz.png" alt="teiwaz"><br>
+										<b>Teowaz</b><br>
+										<i>Sound: "t, voiced and unvoiced"</i>
+									</td>
+									<td><b>Positive Meaning:</b> This rune belongs to Tyr, the god of war and victory. As such, it represents success and bravery in your endeavors.</td>
+									<td><b>Reversed Meaning:</b> Reversed, this rune indicates cowardice, weakness, and lack of initiative. It may mean that you are being too rigid and will experience failure as a result.</td>
+								</tr><tr>
+									<td>
+										<img src="img/runes/fthark_berkano.png" alt="berkano"><br>
+										<b>Berkano</b><br>
+										<i>Sound: "b"</i>
+									</td>
+									<td><b>Positive Meaning:</b> Represents the birch tree and the earth. It is associated with birth and fertility, and can represent new beginnings and emotional stability.</td>
+									<td><b>Reversed Meaning:</b> When this rune is reversed, it can point to infertility, argumentativeness, and domestic problems. Take care to make sure you are not putting your own needs above others'.</td>
+								</tr><tr>
+									<td>
+										<img src="img/runes/fthark_ehwaz.png" alt="ehwaz"><br>
+										<b>Ehwaz</b><br>
+										<i>Sound: "eh"</i>
+									</td>
+									<td><b>Positive Meaning:</b> This rune is associated with horses and journeys, and can also represent the journey between the two worlds. It is associated with psychoactive drugs and reevaluating your outlook on life.</td>
+									<td><b>Reversed Meaning:</b> Now is not the time for change or actions. You may need to reflect and wait.</td>
+								</tr><tr>
+									<td>
+										<img src="img/runes/fthark_mannaz.png" alt="mannaz"><br>
+										<b>Mannaz</b><br>
+										<i>Sound: "m"</i>
+									</td>
+									<td><b>Positive Meaning:</b> This rune represents man and mortality. It is a rune of rationality as well as teamwork and social structure, and is associated with the god Heimdal.</td>
+									<td><b>Reversed Meaning:</b> When Mannaz is reversed, you may be feeling lost and isolated. Seek advice and second opinions from those you trust.</td>
+								</tr><tr>
+									<td>
+										<img src="img/runes/fthark_inguz.png" alt="inguz"><br>
+										<b>Inguz</b><br>
+										<i>Sound: "ng"</i>
+									</td>
+									<td><b>Positive Meaning:</b> This is the rune of Ing, the horse-god of fertility. This rune is representative of fresh starts and new projects.</td>
+									<td><b>Reversed Meaning:</b> The appearance of this rune is reversed position can indicate depression and confusion, due to not listening to your intuition.</td>
+								</tr><tr>
+									<td>
+										<img src="img/runes/fthark_othila.png" alt="othila"><br>
+										<b>Othila</b><br>
+										<i>Sound: "o"</i>
+									</td>
+									<td><b>Positive Meaning:</b> This rune represents inheritance and everything that comes with it. It can refer to physical possessions, traditions, and family, or harvesting and cultivating the land.</td>
+									<td><b>Reversed Meaning:</b> Reversed, this is a rune of decay, and indicates that you are holding on to old ideas and traditions.</td>
+								</tr><tr>
+									<td>
+										<img src="img/runes/fthark_dagaz.png" alt="dagaz"><br>
+										<b>Dagaz</b><br>
+										<i>Sound: "d"</i>
+									</td>
+									<td><b>Positive Meaning:</b> Dagaz represents the day and the passage from dark to light. It can represent gradual change as well as protection and the banishment of negative energy.</td>
+									<td><b>Reversed Meaning:</b> Dagaz actually has no negative interpretation. If you&apos;ve drawn this rune, you may be looking for problems where are are none.</td>
+									</tr><tr>
+									<td>
+										<img src="img/runes/fthark_wyrd.png" alt="wyrd"><br>
+										<b>Wyrd</b><br>
+										<i>Sound: "none"</i>
+									</td>
+									<td><b>Positive Meaning:</b> This is sometimes used as the blank rune, and in a reading can refer to fate or destiny.</td>
+									<td><b>Reversed Meaning:</b> There is no negative interpretation for this rune.</td>
+								</tr>
+							</table>
+						</fieldset>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -495,13 +719,16 @@
 	
 	
 	<ul id="beginMenu" class="beginMenuLinks" style="display: none">
-		<li><div><a href="#">Link1</a></div></li>
-		<li><div><a href="#">Link2</a></div>
+		<li><div><a href="#" onclick="showWindow('settings')">Settings</a></div></li>
+		<li><div><a href="#" onclick="showWindow('calculator')">Calculator</a></div></li>
+		<li><div><a href="#" onclick="showWindow('textpad')">Textpad</a></div></li>
+		<li><div><a href="#" onclick="showWindow('CsvEdit')">CSVEdit</a></div></li>
+		<li><div><a href="#" onclick="showWindow('paganTools')">Pagan Tools</a></div>
 			<ul>
-				<li><div>Sub link here</div></li>
+				<li><a href="#" onclick="showWindow('paganTools')">Main</a></li>
+				<li><a href="#" onclick="showWindow('ftharkReader')">Fthark Reader</a></li>
 			</ul>
 		</li>
-		<li><div><a href="#">Link3</a></div></li>
 	</ul>
 	
 	<div id="taskBar">
@@ -529,6 +756,7 @@
 			if(classTest != null){
 				classTest.parentNode.remove();
 			}
+			$("#beginMenu").hide();
 			return false;
 		}
 		
