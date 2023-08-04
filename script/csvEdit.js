@@ -1,9 +1,24 @@
+// these variables are for keeping track of the rows & cells I've added so that I can easily remove them later
+var rcounter = 0;
+var ccounter = 5;
+var evenClass = "";
+
+function insertCell(){
+	// Adding a cell is more compliated. First we'll need to get the number of rows that are on screen. 
+	var rowCount = $(".csvDisplay tr").length;
+
+	// Then we'll loop through them and add an additional cell to the last child of each row, and mark it with a class for easy retrieval
+	for(i = 0; i <= rowCount; i++){
+		var className = ".csv-td-r" + i + "c4";
+
+		$(".csvDisplay " + className).parent().append('<td class="added-td-r' + i + 'c' + ccounter + '"> <input type="text" name="csv-text-r' + i + 'c' + ccounter + '"> </td>');
+	};
+	// Increment the counter for which cell we've added
+	++ccounter;
+};
+
 // This is the code for the csvEditor. It must be loaded after jquery and jquery ui because it depends on both of them.
 $( function() {
-	// these variables are for keeping track of the rows & cells I've added so that I can easily remove them later
-	var rcounter = 0;
-	var ccounter = 5;
-	var evenClass = "";
 	
 	$("#csv-modalDialogue").dialog({
 		autoOpen: false
@@ -58,7 +73,7 @@ $( function() {
 	
 	
 	
-	// Binds a click event to the insert cell button that...adds a row. I've marked it with a unique class for easy removal later
+	// Binds a click event to the insert cell button that...adds a cell. I've marked it with a unique class for easy removal later
 	$("#insert-cell").click(function insertCell(){
 		// Adding a cell is more compliated. First we'll need to get the number of rows that are on screen. 
 		var rowCount = $(".csvDisplay tr").length;
@@ -101,7 +116,8 @@ $( function() {
 		
 		// Loop through the table and grab each input
 		for(i = 0; i <= totalRows; ++i){
-			for(j = 0; j <= totalCells; ++j){
+			// We need to divide the number of cells by the number of rows otherwise it'll try to put all the cells on one line
+			for(j = 0; j <= totalCells / totalRows; ++j){
 				inputClass = ".csv-text-r" + i + "c" + j;
 				// This just keeps us from writing "undefined" for every blank input
 				if($(inputClass).val() == undefined && j != 0)
@@ -164,34 +180,66 @@ function loadCsvFile() {
     "load",
     () => {
       // This loops through the file and prints the data in it to our table	  
-      var data = reader.result;
+      var readData = reader.result;
+	  // I'm creating a copy of this string so that I don't have to move the reader to the beginning
+	  var countData = readData;
 	  
-	  console.log(data);
+	  console.log(readData);
 	  
 	  // Get the total number of rows currently on screen
 		var totalRows = $(".csvDisplay tr").length;
 		var totalCells = ($(".csvDisplay td").length)/totalRows;
-		var fileLength = data.length;
+		var fileLength = readData.length;
 		var charIndex = 0;
 		console.log("Rows: " + totalRows + " | Cells: " + totalCells);
 		
+	  // Get total number of rows in the document
+		var fileRows = countData.match(/\r\n|\r|\n/g).length;
+		var matchStr = new RegExp(/,/g);
+		var fileCells = (countData.match(matchStr).length) / fileRows;
+		console.log("Rows in file: " + fileRows + " | Cells in file: " + fileCells);
+		
 		// Row counter
 		for(i = 0; i <= totalRows; ++i){
-
+			console.log(totalRows + "; " + i);
+			console.log("Now proccessing row number: " + i);
 			// Cell counter
 			for(j = 0; j <= totalCells; ++j){
-				inputClass = ".csv-text-r" + i + "c" + j;
+				console.log("Now processing cell number: " + j);
+				// This is how we find the cells on the screen
+				inputClass = "csv-text-r" + i + "c" + (j+1);
+				inputCheck = document.getElementsByClassName(inputClass);
 				
-				while(data.charAt(charIndex) != ','){
-					$(inputClass).val($(inputClass).val() + data.charAt(charIndex));
-					++charIndex;
-				};
+					//If that cell exists
+					if(inputCheck.length != 0) {
+						console.log("The cell exists. Moving on");
+						// put the data in there using a while loop to print each character
+						while(readData.charAt(charIndex) != ","){
+							// Put that data in there!
+							$("." + inputClass).val($("." + inputClass).val() + readData.charAt(charIndex));
+							++charIndex;
+						}
+					}
+					else{
+						console.log("The cell doesn't exist, so I'm going to add it");
+						insertCell();
+						while(readData.charAt(charIndex) != ","){
+							console.log("The cell is added, so now I'm going to put the data in");
+							// Put that data in there!
+							$("." + inputClass).val($("." + inputClass).val() + readData.charAt(charIndex));
+							++charIndex;
+						}
+					console.log("The if/else statements are done, so we're moving on");
+					}
+				console.log("Now I'm incrementing our cell counter");
 				++charIndex;
 
 			};
+			console.log("Cell loop is done. Moving to next row");
 		};
+		console.log("Row loop is done, moving on");
     },
-    false
+    //false
   );
 
   if (file) {
