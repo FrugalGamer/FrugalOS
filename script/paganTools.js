@@ -5,7 +5,34 @@ month = d.getMonth()+1;
 day = d.getDate();
 
 dateOutput = (month<10 ? '0' : '') + month + '/' + (day<10 ? '0' : '') + day + "/" + d.getFullYear();
-			
+
+// From here: https://foolishdeveloper.com/save-textarea-text-to-a-file-using-javascript/
+function downloadSpread(filename, content) {
+  // It works on all HTML5 Ready browsers as it uses the download attribute of the <a> element:
+  const element = document.createElement("a");
+  
+  //A blob is a data type that can store binary data
+  // “type” is a MIME type
+  // It can have a different value, based on a file you want to save
+  const blob = new Blob([content], { type: "plain/text" });
+  //createObjectURL() static method creates a DOMString containing a URL representing the object given in the parameter.
+  const fileUrl = window.URL.createObjectURL(blob);
+  
+  //setAttribute() Sets the value of an attribute on the specified element.
+  element.setAttribute("href", window.URL.createObjectURL(blob)); //file location
+  element.setAttribute("download", filename); // file name
+  element.style.display = "none";
+  
+  //use appendChild() method to move an element from one element to another
+  document.body.appendChild(element);
+  element.click();
+  
+  //The removeChild() method of the Node interface removes a child node from the DOM and returns the removed node
+  //document.body.removeChild(element);
+  //Release fileURL object for memory reasons
+  URL.revokeObjectURL(blob.URL);
+};
+
 	function pullWitchRune(){
 	if($(".intention").val() == 0){
 		$("#paganTools .error").show();
@@ -232,7 +259,7 @@ dateOutput = (month<10 ? '0' : '') + month + '/' + (day<10 ? '0' : '') + day + "
 		}
 	}
 	
-	function pullFtharkRune(){
+	function pullFtharkRune(numRunes){
 	if($(".intention").val() == 0){
 		$("#paganTools .error").show();
 	}
@@ -299,7 +326,7 @@ dateOutput = (month<10 ? '0' : '') + month + '/' + (day<10 ? '0' : '') + day + "
 				runeName = "Wujo";
 				aettGroup = "Frey's Aett";
 				sound = "v or w";
-				toolTip = "Bliss, happiness, and joy, this is a very positive rune that can show that relief is coming, or that you will soon be able to enjoy a break from life's chaos. It emphasizes harmony and balance with the world.";
+				toolTip = "Bliss, happiness, and joy, this is a very positive rune that can show that relief is coming, or that you will soon be able to enjoy a break from life&apos;s chaos. It emphasizes harmony and balance with the world.";
 				break;
 			case 9:
 				fileName = "fthark_hagalaz.png";
@@ -376,7 +403,7 @@ dateOutput = (month<10 ? '0' : '') + month + '/' + (day<10 ? '0' : '') + day + "
 				runeName = "Ehwaz";
 				aettGroup = "Tyr's Aett";
 				sound = "eh";
-				toolTip = "This rune is associated with horses and journyes, and can also represent the journey between the two worlds. It is associated with psychoactive drugs and reevaluating your outlook on life.";
+				toolTip = "This rune is associated with horses and journeys, and can also represent the journey between the two worlds. It is associated with psychoactive drugs and reevaluating your outlook on life.";
 				break;
 			case 20:
 				fileName = "fthark_mannaz.png";
@@ -554,16 +581,47 @@ dateOutput = (month<10 ? '0' : '') + month + '/' + (day<10 ? '0' : '') + day + "
 				toolTip = "An error has occured";
 				break;					
 		}
-		// I'm returning this as an array so that I can use the function in multiple places
-		result = [fileName, toolTip, runeName, aettGroup, sound];
+		// I'm returning this as an object so that I can use the function in multiple places
+		result = {"fileName": fileName,"toolTip": toolTip,"runeName": runeName,"aettGroup": aettGroup,"sound": sound};
 		return(result);
 	}
+}
+
+// This is for spreads, to make sure that all the runes I've pulled are unique. This function takes one argument: the number of runes you'd like to pull
+function pullUniqueFtharkRunes(numRunes){
+	var runesPulled = new Array();
+	i = 0;
+
+	// Here we're looping through this procedure as many times as we need to in order to pull the correct amount of runes.
+	while(i < numRunes){
+		
+		length = numRunes;
+
+		// Here I'm looping through all existing runes I've already pulled
+		for(j = 0; j < length; j++){
+			// Pull a new rune
+			newRune = pullFtharkRune();
+
+			// If the existing array includes the filename of the rune we just pulled, pull another one
+			if(runesPulled.find(o => o.fileName === newRune.fileName)){
+				//If we have, pull another rune (restart the loop)
+				newRune = pullFtharkRune();
+			}
+			// If we haven't, add it to the array and increment our counter
+			else {
+				runesPulled.push(newRune);
+				i++;
+			}
+		}
+
+	}
+	return runesPulled;
 }
 
 function displayFtharkRune(){
 	pullFtharkRune();
 
-	returnString = "<div class='frune'><img src='img/runes/" + result[0] + "' title='" + result[1] + "'><br><b>" + result[2] + "</b><br><i>(" + result[3] + ")</i><br><b>Sound:</b> " + result[4] + "<br><p>" + result[1] + "</p></div>";
+	returnString = "<div class='frune'><img src='img/runes/" + result.fileName + "' title='" + result.runeName + "'><br><b>" + result.runeName + "</b><br><i>(" + result.aettGroup + ")</i><br><b>Sound:</b> " + result.sound + "<br><p>" + result.toolTip + "</p></div>";
 
 	$("#fruneResult").append(returnString);
 }
@@ -572,263 +630,629 @@ function pullFtharkSpread(){
 	spreadName = document.getElementById("spreadName").value;
 	$("#ftharkSpreadResult").empty();
 
-	/* Here's where the spreads are. Yes, they are ugly. I don't yet know of a way to do them without being ugly. Basically I'm buliding a unique table for each one and running the pullFtharkRune function for each individual rune.*/
+	/* Here's where the spreads are. Yes, they are ugly. I don't yet know of a way to do them without being ugly. Basically I'm buliding a unique table for each one and running the pullUniqueFtharkRune function for the runes I need.*/
 	switch(spreadName){
 		case "threerune":
-			// Get the first rune
-			rune1 = pullFtharkRune();
-				returnString = "<table><tr>";
-				returnString += "<td>Past<br><i>or</i><br>Problem<br><i>or</i><br>Physical</td><td>Present<br><i>or</i><br>Action<br><i>or</i><br>Mental</td><td>Future<br><i>or</i><br>Outcome<br><i>or</i><br>Spiritual</td></tr><tr><td>";
-				returnString += "<sup>1</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + rune1[0] + "' toolTip='" + rune1[1] + "'></a><br>";
-				returnString += "<b>" + rune1[2] + "</b>";
+			// Get the runes
+			runes = pullUniqueFtharkRunes(3);
+
+				returnString = "<h3 class='spreadElement'>Three Rune Spread</h3><table><tr>";
+				returnString += "<td><i>Past<br>Problem<br>Physical</i></td><td><i>Present<br>Action<br>Mental</i></td><td><i>Future<br>Outcome<br>Spiritual</i></td></tr><tr><td>";
+				returnString += "<sup class='spreadElement'>1</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[0].fileName + "' toolTip='" + runes[0].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[0].runeName + "</b><i class='off spreadElement'>Past/problem/physical</i>";
 				returnString += "</td><td>"
-			// Get the second rune
-			rune2 = pullFtharkRune();
-				returnString += "<sup>2</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + rune2[0] + "' toolTip='" + rune2[1] + "'></a><br>";
-				returnString += "<b>" + rune2[2] + "</b>";
+
+				returnString += "<sup class='spreadElement'>2</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[1].fileName + "' toolTip='" + runes[1].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[1].runeName + "</b><i class='off spreadElement'>Present/action/mental</i>";
 				returnString += "</td><td>";
-			// Get the third rune
-			rune3 = pullFtharkRune();
-				returnString += "<sup>3</sup><a href='#' class='ftharkRuneLink' id='test'><img src='img/runes/" + rune3[0] + "' toolTip='" + rune3[1] + "'></a><br>";
-				returnString += "<b>" + rune3[2] + "</b>";
+
+				returnString += "<sup class='spreadElement'>3</sup><a href='#' class='ftharkRuneLink' id='test'><img src='img/runes/" + runes[2].fileName + "' toolTip='" + runes[2].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[2].runeName + "</b><i class='off spreadElement'>Future/outcome/spiritual</i>";
 				returnString += "</td></tr><tr><td colspan=3 id='runeresult'>Click on a rune for more info";
 				returnString += "</td></tr></table>";
 			break;
 
 		case "fourdwarves":
-			// Get the first rune
-			rune1 = pullFtharkRune();
-			rune2 = pullFtharkRune();
-				returnString = "<table><tr><td>";
-				returnString += "<sup>2</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + rune2[0] + "' toolTip='" + rune2[1] + "'></a><br>";
-				returnString += "<b>" + rune2[2] + "</b><br><i>How you feel about the question now</i></td>";
+			// Get the runes
+			runes = pullUniqueFtharkRunes(4);
+
+				returnString = "<h3 class='spreadElement'>The Four Dwarves</h3><table><tr><td>";
+				returnString += "<sup class='spreadElement'>2</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[1].fileName + "' toolTip='" + runes[1].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[1].runeName + "</b><br><i class='spreadElement'>How you feel about the question now</i></td>";
 				returnString += "</td><td><td></td><td>"
 
-				returnString += "<sup>1</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + rune1[0] + "' toolTip='" + rune1[1] + "'></a><br>";
-				returnString += "<b>" + rune1[2] + "</b><br><i>Your past desires in relation to the question</i>";
+				returnString += "<sup class='spreadElement'>1</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[0].fileName + "' toolTip='" + runes[0].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[0].runeName + "</b><br><i class='spreadElement'>Your past desires in relation to the question</i>";
 				returnString += "</td><td></tr><tr>";
 				returnString += "<td></td><td>";
-			// Get the third rune
-			rune3 = pullFtharkRune();
-				returnString += "<sup>3</sup><a href='#' class='ftharkRuneLink' id='test'><img src='img/runes/" + rune3[0] + "' toolTip='" + rune3[1] + "'></a><br>";
-				returnString += "<b>" + rune3[2] + "</b><br><i>Desires and feelings of others regarding the question</i>";
+
+				returnString += "<sup class='spreadElement'>3</sup><a href='#' class='ftharkRuneLink' id='test'><img src='img/runes/" + runes[2].fileName + "' toolTip='" + runes[2].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[2].runeName + "</b><br><i class='spreadElement'>Desires and feelings of others regarding the question</i>";
 				returnString += "</td><td></td><td></tr>";
 				returnString += "<tr><td></td><td></td><td>";
-			// Get the fourth rune
-			rune4 = pullFtharkRune();
-				returnString += "<sup>4</sup><a href='#' class='ftharkRuneLink' id='test'><img src='img/runes/" + rune4[0] + "' toolTip='" + rune3[1] + "'></a><br>";
-				returnString += "<b>" + rune4[2] + "</b><br><i>Your heart's hidden desire regarding the question</i>";
+
+				returnString += "<sup class='spreadElement'>4</sup><a href='#' class='ftharkRuneLink' id='test'><img src='img/runes/" + runes[3].fileName + "' toolTip='" + runes[3].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[3].runeName + "</b><br><i class='spreadElement'>Your heart's hidden desire regarding the question</i>";
 				returnString += "</td></tr><tr><td colspan=4 id='runeresult'>Click on a rune for more info";
 				returnString += "</td></tr></table>";
 			break;
 
 		case "crossofthor":
-			// I'm pulling the runes early because they won't get printed in the order they need to be generated
-			rune1 = pullFtharkRune();
-			rune2 = pullFtharkRune();
-			rune3 = pullFtharkRune();
-			rune4 = pullFtharkRune();
-			rune5 = pullFtharkRune();
+			runes = pullUniqueFtharkRunes(5);
 
-				returnString = "<table><tr><td></td><td>";
-				returnString += "<sup>1</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + rune1[0] + "' toolTip='" + rune1[1] + "'></a><br>";
-				returnString += "<b>" + rune1[2] + "</b><br><i>Situation</i></td>";
+				returnString = "<h3 class='spreadElement'>Cross of Thor</h3><table><tr><td></td><td>";
+				returnString += "<sup class='spreadElement'>1</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[0].fileName + "' toolTip='" + runes[0].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[0].runeName + "</b><br><i class='spreadElement'>Situation</i></td>";
 				returnString += "</td><td></tr><tr><td>"
 
-				returnString += "<sup>2</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + rune2[0] + "' toolTip='" + rune2[1] + "'></a><br>";
-				returnString += "<b>" + rune2[2] + "</b><br><i>Obstacles</i>";
+				returnString += "<sup class='spreadElement'>2</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[1].fileName + "' toolTip='" + runes[1].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[1].runeName + "</b><br><i class='spreadElement'>Obstacles</i>";
 				returnString += "</td><td>";
-				returnString += "<sup>5</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + rune5[0] + "' toolTip='" + rune5[1] + "'></a><br>";
-				returnString += "<b>" + rune5[2] + "</b><br><i>Long term outcome</i>";
+				returnString += "<sup class='spreadElement'>5</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[4].fileName + "' toolTip='" + runes[4].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[4].runeName + "</b><br><i class='spreadElement'>Long term outcome</i>";
 				returnString += "</td><td>";
-				returnString += "<sup>4</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + rune4[0] + "' toolTip='" + rune4[1] + "'></a><br>";
-				returnString += "<b>" + rune4[2] + "</b><br><i>Short term outcome</i>";
+				returnString += "<sup class='spreadElement'>4</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[3].fileName + "' toolTip='" + runes[3].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[3].runeName + "</b><br><i class='spreadElement'>Short term outcome</i>";
 				returnString += "</td><td></tr><tr>";
 				returnString += "<td></td><td>";
-				returnString += "<sup>3</sup><a href='#' class='ftharkRuneLink' id='test'><img src='img/runes/" + rune3[0] + "' toolTip='" + rune3[1] + "'></a><br>";
-				returnString += "<b>" + rune3[2] + "</b><br><i>Supportive Forces</i>";
+				returnString += "<sup class='spreadElement'>3</sup><a href='#' class='ftharkRuneLink' id='test'><img src='img/runes/" + runes[2].fileName + "' toolTip='" + runes[2].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[2].runeName + "</b><br><i class='spreadElement'>Supportive Forces</i>";
 				returnString += "</td><td></td></tr>";
 				returnString += "</td></tr><tr><td colspan=4 id='runeresult'>Click on a rune for more info";
 				returnString += "</td></tr></table>";
 			break;
 
 		case "fiveelements":
-			// I'm pulling the runes early because they won't get printed in the order they need to be generated
-			rune1 = pullFtharkRune();
-			rune2 = pullFtharkRune();
-			rune3 = pullFtharkRune();
-			rune4 = pullFtharkRune();
-			rune5 = pullFtharkRune();
+			runes = pullUniqueFtharkRunes(5);
 
-				returnString = "<p>This spread is useful for personality insight or questions</p><table><tr><td></td><td>";
-				returnString += "<sup>1</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + rune1[0] + "' toolTip='" + rune1[1] + "'></a><br>";
-				returnString += "<b>" + rune1[2] + "</b><br><i>Intellect</i></td>";
+				returnString = "<p><b>Note:</b> This spread is useful for personality insight or questions</p><h3 class='spreadElement'>The Five Elements</h3><table><tr><td></td><td>";
+				returnString += "<sup class='spreadElement'>1</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[0].fileName + "' toolTip='" + runes[0].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[0].runeName + "</b><br><i class='spreadElement'>Intellect</i></td>";
 				returnString += "</td><td></tr><tr><td>"
 
-				returnString += "<sup>3</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + rune3[0] + "' toolTip='" + rune3[1] + "'></a><br>";
-				returnString += "<b>" + rune3[2] + "</b><br><i>Strength</i>";
+				returnString += "<sup class='spreadElement'>3</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[2].fileName + "' toolTip='" + runes[2].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[2].runeName + "</b><br><i class='spreadElement'>Strength</i>";
 				returnString += "</td><td>";
-				returnString += "<sup>5</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + rune5[0] + "' toolTip='" + rune5[1] + "'></a><br>";
-				returnString += "<b>" + rune5[2] + "</b><br><i>Balance</i>";
+				returnString += "<sup class='spreadElement'>5</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[4].fileName + "' toolTip='" + runes[4].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[4].runeName + "</b><br><i class='spreadElement'>Balance</i>";
 				returnString += "</td><td>";
-				returnString += "<sup>4</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + rune4[0] + "' toolTip='" + rune4[1] + "'></a><br>";
-				returnString += "<b>" + rune4[2] + "</b><br><i>Love</i>";
+				returnString += "<sup class='spreadElement'>4</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[3].fileName + "' toolTip='" + runes[3].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[3].runeName + "</b><br><i class='spreadElement'>Love</i>";
 				returnString += "</td><td></tr><tr>";
 				returnString += "<td></td><td>";
-				returnString += "<sup>2</sup><a href='#' class='ftharkRuneLink' id='test'><img src='img/runes/" + rune2[0] + "' toolTip='" + rune2[1] + "'></a><br>";
-				returnString += "<b>" + rune2[2] + "</b><br><i>Desire</i>";
+				returnString += "<sup class='spreadElement'>2</sup><a href='#' class='ftharkRuneLink' id='test'><img src='img/runes/" + runes[1].fileName + "' toolTip='" + runes[1].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[1].runeName + "</b><br><i class='spreadElement'>Desire</i>";
 				returnString += "</td><td></td></tr>";
 				returnString += "</td></tr><tr><td colspan=4 id='runeresult'>Click on a rune for more info";
 				returnString += "</td></tr></table>";
 			break;
 
 		case "fiveelements2":
-			// I'm pulling the runes early because they won't get printed in the order they need to be generated
-			rune1 = pullFtharkRune();
-			rune2 = pullFtharkRune();
-			rune3 = pullFtharkRune();
-			rune4 = pullFtharkRune();
-			rune5 = pullFtharkRune();
+			runes = pullUniqueFtharkRunes(5);
 
-				returnString = "<table><tr><td></td><td>";
-				returnString += "<sup>1</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + rune1[0] + "' toolTip='" + rune1[1] + "'></a><br>";
-				returnString += "<b>" + rune1[2] + "</b><br><i>Physical body and environment</i></td>";
+				returnString = "<h3 class='spreadElement'>The Five Elements (alt)</h3><table><tr><td></td><td>";
+				returnString += "<sup class='spreadElement'>1</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[0].fileName + "' toolTip='" + runes[0].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[0].runeName + "</b><br><i class='spreadElement'>Physical body and environment</i></td>";
 				returnString += "</td><td></tr><tr><td>"
 
-				returnString += "<sup>4</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + rune4[0] + "' toolTip='" + rune4[1] + "'></a><br>";
-				returnString += "<b>" + rune4[2] + "</b><br><i>Your emotions in regard to the question</i>";
+				returnString += "<sup class='spreadElement'>4</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[3].fileName + "' toolTip='" + runes[3].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[3].runeName + "</b><br><i class='spreadElement'>Your emotions in regard to the question</i>";
 				returnString += "</td><td>";
-				returnString += "<sup>5</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + rune5[0] + "' toolTip='" + rune5[1] + "'></a><br>";
-				returnString += "<b>" + rune5[2] + "</b><br><i>Spiritual influences</i>";
+				returnString += "<sup class='spreadElement'>5</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[4].fileName + "' toolTip='" + runes[4].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[4].runeName + "</b><br><i class='spreadElement'>Spiritual influences</i>";
 				returnString += "</td><td>";
-				returnString += "<sup>2</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + rune2[0] + "' toolTip='" + rune2[1] + "'></a><br>";
-				returnString += "<b>" + rune2[2] + "</b><br><i>Your present state of mind</i>";
+				returnString += "<sup class='spreadElement'>2</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[1].fileName + "' toolTip='" + runes[1].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[1].runeName + "</b><br><i class='spreadElement'>Your present state of mind</i>";
 				returnString += "</td><td></tr><tr>";
+				
 				returnString += "<td></td><td>";
-				returnString += "<sup>3</sup><a href='#' class='ftharkRuneLink' id='test'><img src='img/runes/" + rune3[0] + "' toolTip='" + rune3[1] + "'></a><br>";
-				returnString += "<b>" + rune3[2] + "</b><br><i>Creative forces at work</i>";
+				returnString += "<sup class='spreadElement'>3</sup><a href='#' class='ftharkRuneLink' id='test'><img src='img/runes/" + runes[2].fileName + "' toolTip='" + runes[2].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[2].runeName + "</b><br><i class='spreadElement'>Creative forces at work</i>";
 				returnString += "</td><td></td></tr>";
 				returnString += "</td></tr><tr><td colspan=4 id='runeresult'>Click on a rune for more info";
 				returnString += "</td></tr></table>";
 			break;
 
 		case "fourdwarves2":
-			// I'm pulling the runes early because they won't get printed in the order they need to be generated
-			rune1 = pullFtharkRune();
-			rune2 = pullFtharkRune();
-			rune3 = pullFtharkRune();
-			rune4 = pullFtharkRune();
-			rune5 = pullFtharkRune();
+			runes = pullUniqueFtharkRunes(5);
 
-				returnString = "<table><tr><td></td><td>";
-				returnString += "<sup>3</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + rune3[0] + "' toolTip='" + rune3[1] + "'></a><br>";
-				returnString += "<b>" + rune3[2] + "</b><br><i>Positive influences at work</i></td>";
+				returnString = "<h3 class='spreadElement'>The Four Dwarves (alt)</h3><table><tr><td></td><td>";
+				returnString += "<sup class='spreadElement'>3</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[2].fileName + "' toolTip='" + runes[2].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[2].runeName + "</b><br><i class='spreadElement'>Positive influences at work</i></td>";
 				returnString += "</td><td></tr><tr><td>"
 
-				returnString += "<sup>2</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + rune2[0] + "' toolTip='" + rune2[1] + "'></a><br>";
-				returnString += "<b>" + rune2[2] + "</b><br><i>Any problems or obstacles</i>";
+				returnString += "<sup class='spreadElement'>2</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[1].fileName + "' toolTip='" + runes[1].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[1].runeName + "</b><br><i class='spreadElement'>Any problems or obstacles</i>";
 				returnString += "</td><td>";
-				returnString += "<sup>5</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + rune5[0] + "' toolTip='" + rune5[1] + "'></a><br>";
-				returnString += "<b>" + rune5[2] + "</b><br><i>Key future influences</i>";
+				returnString += "<sup class='spreadElement'>5</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[4].fileName + "' toolTip='" + runes[4].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[4].runeName + "</b><br><i class='spreadElement'>Key future influences</i>";
 				returnString += "</td><td>";
-				returnString += "<sup>4</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + rune4[0] + "' toolTip='" + rune4[1] + "'></a><br>";
-				returnString += "<b>" + rune4[2] + "</b><br><i>Immediate outcome</i>";
+				returnString += "<sup class='spreadElement'>4</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[3].fileName + "' toolTip='" + runes[3].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[3].runeName + "</b><br><i class='spreadElement'>Immediate outcome</i>";
 				returnString += "</td><td></tr><tr>";
 				returnString += "<td></td><td>";
-				returnString += "<sup>1</sup><a href='#' class='ftharkRuneLink' id='test'><img src='img/runes/" + rune1[0] + "' toolTip='" + rune1[1] + "'></a><br>";
-				returnString += "<b>" + rune1[2] + "</b><br><i>Basic influences surrounding the question</i>";
+				returnString += "<sup class='spreadElement'>1</sup><a href='#' class='ftharkRuneLink' id='test'><img src='img/runes/" + runes[0].fileName + "' toolTip='" + runes[0].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[0].runeName + "</b><br><i class='spreadElement'>Basic influences surrounding the question</i>";
 				returnString += "</td><td></td></tr>";
 				returnString += "</td></tr><tr><td colspan=4 id='runeresult'>Click on a rune for more info";
 				returnString += "</td></tr></table>";
 			break;
 
 		case "situation":
-			// I'm pulling the runes early because they won't get printed in the order they need to be generated
-			rune1 = pullFtharkRune();
-			rune2 = pullFtharkRune();
-			rune3 = pullFtharkRune();
-			rune4 = pullFtharkRune();
-			rune5 = pullFtharkRune();
+			runes = pullUniqueFtharkRunes(6);
 
-				returnString = "<table><tr><td></td><td>";
-				returnString += "<sup>4</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + rune4[0] + "' toolTip='" + rune4[1] + "'></a><br>";
-				returnString += "<b>" + rune4[2] + "</b><br><i>Positive influences at work</i></td>";
+				returnString = "<h3 class='spreadElement'>Situation Spread</h3><table><tr><td></td><td>";
+				returnString += "<sup class='spreadElement'>4</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[3].fileName + "' toolTip='" + runes[3].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[3].runeName + "</b><br><i class='spreadElement'>Positive influences at work</i></td>";
 				returnString += "</td><td></tr><tr><td>"
 
-				returnString += "<sup>1</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + rune1[0] + "' toolTip='" + rune1[1] + "'></a><br>";
-				returnString += "<b>" + rune1[2] + "</b><br><i>Any problems or obstacles</i>";
+				returnString += "<sup class='spreadElement'>1</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[0].fileName + "' toolTip='" + runes[0].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[0].runeName + "</b><br><i class='spreadElement'>Any problems or obstacles</i>";
 				returnString += "</td><td>";
-				returnString += "<sup>2</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + rune2[0] + "' toolTip='" + rune2[1] + "'></a><br>";
-				returnString += "<b>" + rune2[2] + "</b><br><i>Key future influences</i>";
+				returnString += "<sup class='spreadElement'>2</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[1].fileName + "' toolTip='" + runes[1].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[1].runeName + "</b><br><i class='spreadElement'>Key future influences</i>";
 				returnString += "</td><td>";
-				returnString += "<sup>3</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + rune3[0] + "' toolTip='" + rune3[1] + "'></a><br>";
-				returnString += "<b>" + rune3[2] + "</b><br><i>Immediate outcome</i>";
+				returnString += "<sup class='spreadElement'>3</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[2].fileName + "' toolTip='" + runes[2].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[2].runeName + "</b><br><i class='spreadElement'>Immediate outcome</i>";
 				returnString += "</td><td></tr><tr>";
 				returnString += "<td></td><td>";
-				returnString += "<sup>5</sup><a href='#' class='ftharkRuneLink' id='test'><img src='img/runes/" + rune5[0] + "' toolTip='" + rune5[1] + "'></a><br>";
-				returnString += "<b>" + rune5[2] + "</b><br><i>Basic influences surrounding the question</i>";
+				returnString += "<sup class='spreadElement'>5</sup><a href='#' class='ftharkRuneLink' id='test'><img src='img/runes/" + runes[4].fileName + "' toolTip='" + runes[4].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[4].runeName + "</b><br><i class='spreadElement'>Basic influences surrounding the question</i>";
 				returnString += "</td><td></td></tr>";
 				returnString += "</td></tr><tr><td colspan=4 id='runeresult'>Click on a rune for more info";
 				returnString += "</td></tr></table>";
 			break;
 
 		case "persona":
-			// Get the first rune
-			rune1 = pullFtharkRune();
-				returnString = "<table><tr><td>";
-				returnString += "<sup>1</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + rune1[0] + "' toolTip='" + rune1[1] + "'></a><br>";
-				returnString += "<b>" + rune1[2] + "</b><br><i>Where you currently find yourself in life</i>";
+			runes = pullUniqueFtharkRunes(5);
+
+				returnString = "<h3 class='spreadElement'>Persona Spread</h3><table><tr><td>";
+				returnString += "<sup class='spreadElement'>1</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[0].fileName + "' toolTip='" + runes[0].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[0].runeName + "</b><br><i class='spreadElement'>Where you currently find yourself in life</i>";
 				returnString += "</td><td>"
-			rune2 = pullFtharkRune();
-				returnString += "<sup>2</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + rune2[0] + "' toolTip='" + rune2[1] + "'></a><br>";
-				returnString += "<b>" + rune2[2] + "</b><br><i>What is on your mind</i>";
+
+				returnString += "<sup class='spreadElement'>2</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[1].fileName + "' toolTip='" + runes[1].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[1].runeName + "</b><br><i class='spreadElement'>What is on your mind</i>";
 				returnString += "</td><td>"
-			rune3 = pullFtharkRune();
-				returnString += "<sup>3</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + rune3[0] + "' toolTip='" + rune3[1] + "'></a><br>";
-				returnString += "<b>" + rune3[2] + "</b><br><i>What is in your heart</i>";
+
+				returnString += "<sup class='spreadElement'>3</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[2].fileName + "' toolTip='" + runes[2].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[2].runeName + "</b><br><i class='spreadElement'>What is in your heart</i>";
 				returnString += "</td><td>"
-			rune4 = pullFtharkRune();
-				returnString += "<sup>4</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + rune4[0] + "' toolTip='" + rune4[1] + "'></a><br>";
-				returnString += "<b>" + rune4[2] + "</b><br><i>Your primary intentions</i>";
+
+				returnString += "<sup class='spreadElement'>4</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[3].fileName + "' toolTip='" + runes[3].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[3].runeName + "</b><br><i class='spreadElement'>Your primary intentions</i>";
 				returnString += "</td><td>"
-			rune5 = pullFtharkRune();
-				returnString += "<sup>5</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + rune5[0] + "' toolTip='" + rune5[1] + "'></a><br>";
-				returnString += "<b>" + rune5[2] + "</b><br><i>Your future actions and deeds</i>";
+
+				returnString += "<sup class='spreadElement'>5</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[4].fileName + "' toolTip='" + runes[4].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[4].runeName + "</b><br><i class='spreadElement'>Your future actions and deeds</i>";
 				returnString += "</td></tr><tr><td colspan=5 id='runeresult'>Click on a rune for more info";
 				returnString += "</td></tr></table>"
 				break;
 
 		case "celticcross":
-			// I'm pulling the runes early because they won't get printed in the order they need to be generated
-			rune1 = pullFtharkRune();
-			rune2 = pullFtharkRune();
-			rune3 = pullFtharkRune();
-			rune4 = pullFtharkRune();
-			rune5 = pullFtharkRune();
-			rune6 = pullFtharkRune();
+			runes = pullUniqueFtharkRunes(6);
 
-				returnString = "<table><tr><td></td><td>";
-				returnString += "<sup>6</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + rune6[0] + "' toolTip='" + rune6[1] + "'></a><br>";
-				returnString += "<b>" + rune6[2] + "</b><br><i>New situation</i></td>";
+				returnString = "<h3 class='spreadElement'>The Celtic Cross</h3><table><tr><td></td><td>";
+				returnString += "<sup class='spreadElement'>6</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[5].fileName + "' toolTip='" + runes[5].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[5].runeName + "</b><br><i class='spreadElement'>New situation</i></td>";
 				returnString += "</td><td></tr><tr><td></td><td>"
 
-				returnString += "<sup>5</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + rune5[0] + "' toolTip='" + rune5[1] + "'></a><br>";
-				returnString += "<b>" + rune5[2] + "</b><br><i>Challenges you will face</i>";
+				returnString += "<sup class='spreadElement'>5</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[4].fileName + "' toolTip='" + runes[4].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[4].runeName + "</b><br><i class='spreadElement'>Challenges you will face</i>";
 				returnString += "</td><td></td></tr><tr><td>";
-				returnString += "<sup>3</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + rune3[0] + "' toolTip='" + rune3[1] + "'></a><br>";
-				returnString += "<b>" + rune3[2] + "</b><br><i>What lies ahead of you</i>";
+				returnString += "<sup class='spreadElement'>3</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[2].fileName + "' toolTip='" + runes[2].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[2].runeName + "</b><br><i class='spreadElement'>What lies ahead of you</i>";
 				returnString += "</td><td></td><td>";
-				returnString += "<sup>1</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + rune1[0] + "' toolTip='" + rune1[1] + "'></a><br>";
-				returnString += "<b>" + rune1[2] + "</b><br><i>Your past</i>";
+				returnString += "<sup class='spreadElement'>1</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[0].fileName + "' toolTip='" + runes[0].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[0].runeName + "</b><br><i class='spreadElement'>Your past</i>";
 				returnString += "</td></tr><tr>";
 				returnString += "<td></td><td>";
-				returnString += "<sup>2</sup><a href='#' class='ftharkRuneLink' id='test'><img src='img/runes/" + rune2[0] + "' toolTip='" + rune2[1] + "'></a><br>";
-				returnString += "<b>" + rune2[2] + "</b><br><i>Where you currently are</i>";
+				returnString += "<sup class='spreadElement'>2</sup><a href='#' class='ftharkRuneLink' id='test'><img src='img/runes/" + runes[1].fileName + "' toolTip='" + runes[1].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[1].runeName + "</b><br><i class='spreadElement'>Where you currently are</i>";
 				returnString += "</td><td></td></tr>";
 				returnString += "<tr><td></td><td>";
-				returnString += "<sup>4</sup><a href='#' class='ftharkRuneLink' id='test'><img src='img/runes/" + rune4[0] + "' toolTip='" + rune4[1] + "'></a><br>";
-				returnString += "<b>" + rune4[2] + "</b><br><i>Foundation</i>";
+				returnString += "<sup class='spreadElement'>4</sup><a href='#' class='ftharkRuneLink' id='test'><img src='img/runes/" + runes[3].fileName + "' toolTip='" + runes[3].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[3].runeName + "</b><br><i class='spreadElement'>Foundation</i>";
 				returnString += "</td></tr><tr><td colspan=3 id='runeresult'>Click on a rune for more info";
+				returnString += "</td></tr></table>";
+			break;
+
+		case "runiccross":
+			runes = pullUniqueFtharkRunes(6);
+
+				returnString = "<h3 class='spreadElement'>The Runic Cross</h3><table><tr><td></td><td>";
+				returnString += "<sup class='spreadElement'>6</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[5].fileName + "' toolTip='" + runes[5].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[5].runeName + "</b><br><i class='spreadElement'>Most likely outcome</i>";
+				returnString += "</td><td></td></tr><tr><td>";
+				returnString += "<sup class='spreadElement'>1</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[0].fileName + "' toolTip='" + runes[0].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[0].runeName + "</b><br><i class='spreadElement'>The past</i>";
+				returnString += "</td><td>";
+				returnString += "<sup class='spreadElement'>5</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[4].fileName + "' toolTip='" + runes[4].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[4].runeName + "</b><br><i class='spreadElement'>Factors that will hinder or help the outcome</i>";
+				returnString += "</td><td>";
+				returnString += "<sup class='spreadElement'>3</sup><a href='#' class='ftharkRuneLink' id='test'><img src='img/runes/" + runes[2].fileName + "' toolTip='" + runes[2].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[2].runeName + "</b><br><i class='spreadElement'>Your possible future</i>";
+				returnString += "</td></tr>";
+				returnString += "<tr><td></td><td>";
+				returnString += "<sup class='spreadElement'>2</sup><a href='#' class='ftharkRuneLink' id='test'><img src='img/runes/" + runes[1].fileName + "' toolTip='" + runes[1].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[1].runeName + "</b><br><i class='spreadElement'>Your present state of mind</i>";
+				returnString += "<td></td></tr><tr><td></td><td>";
+				returnString += "<sup class='spreadElement'>4</sup><a href='#' class='ftharkRuneLink' id='test'><img src='img/runes/" + runes[3].fileName + "' toolTip='" + runes[3].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[3].runeName + "</b><br><i class='spreadElement'>Basic influences behind the question</i>";				
+				returnString += "<td></td></td></tr><tr><td colspan=3 id='runeresult'>Click on a rune for more info";
+				returnString += "</td></tr></table>";
+			break;
+
+		case "career":
+			runes = pullUniqueFtharkRunes(6);
+
+				returnString = "<h3 class='spreadElement'>Career Spread</h3><table><tr><td></td><td>";
+				returnString += "<sup class='spreadElement'>6</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[5].fileName + "' toolTip='" + runes[5].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[5].runeName + "</b><br><i class='spreadElement'>Future outcome</i>";
+				returnString += "</td><td></td></tr><tr><td>";
+				returnString += "<sup class='spreadElement'>1</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[0].fileName + "' toolTip='" + runes[0].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[0].runeName + "</b><br><i class='spreadElement'>Your current position</i>";
+				returnString += "</td><td>";
+				returnString += "</td><td>";
+				returnString += "<sup class='spreadElement'>3</sup><a href='#' class='ftharkRuneLink' id='test'><img src='img/runes/" + runes[2].fileName + "' toolTip='" + runes[2].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[2].runeName + "</b><br><i class='spreadElement'>Your position of greatest<br>strength and ability</i>";
+				returnString += "</td></tr>";
+				returnString += "<tr><td></td><td>";
+				returnString += "<sup class='spreadElement'>5</sup><a href='#' class='ftharkRuneLink' id='test'><img src='img/runes/" + runes[4].fileName + "' toolTip='" + runes[4].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[4].runeName + "</b><br><i class='spreadElement'>Your future perception</i>";
+				returnString += "<td></td></tr><tr><td></td><td>";
+
+				returnString += "<tr><td></td><td>";
+				returnString += "<sup class='spreadElement'>2</sup><a href='#' class='ftharkRuneLink' id='test'><img src='img/runes/" + runes[1].fileName + "' toolTip='" + runes[1].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[1].runeName + "</b><br><i class='spreadElement'>The challenge you face</i>";
+				returnString += "<td></td></tr><tr><td></td><td>";
+				returnString += "<sup class='spreadElement'>4</sup><a href='#' class='ftharkRuneLink' id='test'><img src='img/runes/" + runes[3].fileName + "' toolTip='" + runes[3].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[3].runeName + "</b><br><i class='spreadElement'>Past perception of the matter</i>";				
+				returnString += "<td></td></td></tr><tr><td colspan=3 id='runeresult'>Click on a rune for more info";
+				returnString += "</td></tr></table>";
+			break;
+
+		case "sevenworlds":
+			runes = pullUniqueFtharkRunes(7);
+
+				returnString = "<h3 class='spreadElement'>Seven Worlds Spread</h3><table><tr><td></td><td>";
+				returnString += "<sup class='spreadElement'>1</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[0].fileName + "' toolTip='" + runes[0].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[0].runeName + "</b><br><i class='spreadElement'>That which is right</i>";
+				returnString += "</td><td></td></tr><tr><td>";
+				returnString += "<sup class='spreadElement'>2</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[1].fileName + "' toolTip='" + runes[1].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[1].runeName + "</b><br><i class='spreadElement'>Things working in your favor</i>";
+				returnString += "</td><td>";
+				returnString += "<sup class='spreadElement'>4</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[3].fileName + "' toolTip='" + runes[3].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[3].runeName + "</b><br><i class='spreadElement'>The querent or core of the question</i>";
+				returnString += "</td><td>";
+				returnString += "<sup class='spreadElement'>3</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[2].fileName + "' toolTip='" + runes[2].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[2].runeName + "</b><br><i class='spreadElement'>Force and strength</i>";
+				returnString += "</td></tr><tr><td>";
+				returnString += "<sup class='spreadElement'>5</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[4].fileName + "' toolTip='" + runes[4].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[4].runeName + "</b><br><i class='spreadElement'>Skill, purpose, and ability</i>";
+				returnString += "</td><td>";
+				returnString += "<sup class='spreadElement'>7</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[6].fileName + "' toolTip='" + runes[6].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[6].runeName + "</b><br><i class='spreadElement'>Hidden factors</i>";
+				returnString += "</td><td>";
+				returnString += "<sup class='spreadElement'>6</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[5].fileName + "' toolTip='" + runes[5].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[5].runeName + "</b><br><i class='spreadElement'>Dangers and forces opposing the querent</i>";			
+				returnString += "</td></tr><tr><td colspan=3 id='runeresult'>Click on a rune for more info";
+				returnString += "</td></tr></table>";
+			break;
+			
+		case "combinedrunes":
+			runes = pullUniqueFtharkRunes(7);
+
+				returnString = "<h3 class='spreadElement'>The Combined Runes Spread</h3><p><b>Note:</b> The runes in this spread are meant to be read in pairs.</p>";
+				returnString += "<table><tr><td></td><td></td><td>";
+				returnString += "<sup class='spreadElement'>1</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[0].fileName + "' toolTip='" + runes[0].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[0].runeName + "</b><br><i class='spreadElement'>The issue at hand</i>";
+				returnString += "</td><td>";
+				returnString += "<sup class='spreadElement'>2</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[1].fileName + "' toolTip='" + runes[1].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[1].runeName + "</b><br><i class='spreadElement'>The issue at hand</i>";
+				returnString += "</td><td></td><td></td></tr>";
+				returnString += "<tr><td></td><td>";
+				returnString += "<sup class='spreadElement'>3</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[2].fileName + "' toolTip='" + runes[2].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[2].runeName + "</b><br><i class='spreadElement'>Factors in the past that are influencing the issue</i>";
+				returnString += "</td><td></td><td></td><td>";
+				returnString += "<sup class='spreadElement'>5</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[4].fileName + "' toolTip='" + runes[4].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[4].runeName + "</b><br><i class='spreadElement'>Advice on how to solve the issue</i>";
+				returnString += "</td><td></td></tr><tr><td>";
+				returnString += "<sup class='spreadElement'>4</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[3].fileName + "' toolTip='" + runes[3].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[3].runeName + "</b><br><i class='spreadElement'>Factors in the past that are influencing the issue</i>";
+				returnString += "</td><td></td><td colspan=2>";
+				returnString += "<sup class='spreadElement'>7</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[6].fileName + "' toolTip='" + runes[6].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[6].runeName + "</b><br><i class='spreadElement'>Outcome of the situation</i>";
+				returnString += "</td><td></td><td>";
+				returnString += "<sup class='spreadElement'>6</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[5].fileName + "' toolTip='" + runes[5].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[5].runeName + "</b><br><i class='spreadElement'>Advice on how to solve the issue</i>";			
+				returnString += "</td></tr><tr><td colspan=6 id='runeresult'>Click on a rune for more info";
+				returnString += "</td></tr></table>";
+			break;
+			
+		case "mimirshead":
+			runes = pullUniqueFtharkRunes(7);
+
+				returnString = "<h3 class='spreadElement'>Mimir's Head</h3><p><b>Note:</b> The runes in this spread are meant to be read in pairs.</p>";
+				returnString += "<table><tr><td></td><td>";
+				returnString += "<sup class='spreadElement'>7</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[6].fileName + "' toolTip='" + runes[6].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[6].runeName + "</b><br><i class='spreadElement'>Results and final outcome</i>";
+				returnString += "</td><td></td><tr>";
+				returnString += "<tr><td>";
+				returnString += "<sup class='spreadElement'>6</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[5].fileName + "' toolTip='" + runes[5].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[5].runeName + "</b><br><i class='spreadElement'>Ways to resolve the issue</i>";
+				returnString += "</td><td></td><td>";
+				returnString += "<sup class='spreadElement'>5</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[4].fileName + "' toolTip='" + runes[4].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[4].runeName + "</b><br><i class='spreadElement'>Ways to resolve the issue</i>";
+				returnString += "</td></tr><tr><td>";
+				returnString += "<sup class='spreadElement'>4</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[3].fileName + "' toolTip='" + runes[3].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[3].runeName + "</b><br><i class='spreadElement'>The reason for the problem</i>";
+				returnString += "</td><td></td><td>";
+				returnString += "<sup class='spreadElement'>3</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[2].fileName + "' toolTip='" + runes[2].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[2].runeName + "</b><br><i class='spreadElement'>The reason for the problem</i>";
+				returnString += "</td></tr><tr><td>";
+				returnString += "<sup class='spreadElement'>2</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[1].fileName + "' toolTip='" + runes[1].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[1].runeName + "</b><br><i class='spreadElement'>Signifies the issue at hand</i>";
+				returnString += "</td><td></td><td>";
+				returnString += "<sup class='spreadElement'>1</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[0].fileName + "' toolTip='" + runes[0].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[0].runeName + "</b><br><i class='spreadElement'>Signifies the issue at hand</i>";			
+				returnString += "</tr><tr><td colspan=3 id='runeresult'>Click on a rune for more info";
+				returnString += "</td></tr></table>";
+			break;
+			
+		case "mimirshead2":
+			runes = pullUniqueFtharkRunes(8);
+
+				returnString = "<h3 class='spreadElement'>Mimir's Head (alt)</h3><p><b>Note:</b> The runes in this spread represents the Wheel of the Year, and each position is ruled by a particular house. Runes that match the house they have landed in have meanings that are especially strong, while if their house is the opposite of their meaning, they are neutralized.</p>";
+				returnString += "<table><tr><td></td><td></td><td>";
+				returnString += "<sup class='spreadElement'>7</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[6].fileName + "' toolTip='" + runes[6].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[6].runeName + "</b><br><i class='spreadElement'>House of Jera: Rune of the yearly harvest, reward, success, and luck</i>";
+				returnString += "</td><td></td><td></td></tr>";
+				returnString += "<tr><td></td><td>";
+				returnString += "<sup class='spreadElement'>6</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[5].fileName + "' toolTip='" + runes[5].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[5].runeName + "</b><br><i class='spreadElement'>House of Hagalaz: Transformation and metamorphosis</i>";
+				returnString += "</td><td></td><td>";
+				returnString += "<sup class='spreadElement'>8</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[7].fileName + "' toolTip='" + runes[7].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[7].runeName + "</b><br><i class='spreadElement'>House of Algiz: Inner strength, the rune of divine guidance and assistance.</i>";
+				returnString += "</td><td></td></tr><tr><td>";
+				returnString += "<sup class='spreadElement'>5</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[4].fileName + "' toolTip='" + runes[4].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[4].runeName + "</b><br><i class='spreadElement'>House of Kaunaz: Learning, creativity,  inspiration</i>";
+				returnString += "</td><td></td><td></td><td></td><td>";
+				returnString += "<sup class='spreadElement'>1</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[0].fileName + "' toolTip='" + runes[0].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[0].runeName + "</b><br><i class='spreadElement'>House of Berkano: Birth, motherhood, beginnings, Mother Goddess</i>";
+				returnString += "</td></tr><tr><td></td><td>";
+				returnString += "<sup class='spreadElement'>4</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[3].fileName + "' toolTip='" + runes[3].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[3].runeName + "</b><br><i class='spreadElement'>House of Thurisaz: Protection from enemies and personal attack, defensive and resistant powers</i>";
+				returnString += "</td><td></td><td>";
+				returnString += "<sup class='spreadElement'>2</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[1].fileName + "' toolTip='" + runes[1].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[1].runeName + "</b><br><i class='spreadElement'>House of Laguz: Growth, flow, second sight</i>";
+				returnString += "</td><td></td></tr><tr><td></td><td></td><td>";
+				returnString += "<sup class='spreadElement'>3</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[2].fileName + "' toolTip='" + runes[2].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[2].runeName + "</b><br><i class='spreadElement'>House of Dagaz: Possible sudden changes, polarities, the balance of day and night</i>";		
+				returnString += "</td><td></td><td></td></tr><tr><td colspan=5 id='runeresult'>Click on a rune for more info";
+				returnString += "</td></tr></table>";
+			break;
+			
+		case "ninegrid":
+			runes = pullUniqueFtharkRunes(9);
+
+				returnString = "<h3 class='spreadElement'>Grid of Nine</h3><p><b>Note:</b> This particular spread represents a magic square</p>";
+				returnString += "<table><tr><td><i>The future</i></td><td>";
+				returnString += "<sup class='spreadElement'>4</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[3].fileName + "' toolTip='" + runes[3].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[3].runeName + "</b><br><i class='spreadElement'>Hidden obstacles</i>";
+				returnString += "</td><td>";
+				returnString += "<sup class='spreadElement'>9</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[8].fileName + "' toolTip='" + runes[8].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[8].runeName + "</b><br><i class='spreadElement'>Best possible outcomes</i>";
+				returnString += "</td><td>";
+				returnString += "<sup class='spreadElement'>2</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[1].fileName + "' toolTip='" + runes[1].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[1].runeName + "</b><br><i class='spreadElement'>Your attitude towards the outcome</i>";
+				returnString += "</td></tr><tr><td><i>The present</i></td><td>";
+				returnString += "<sup class='spreadElement'>3</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[2].fileName + "' toolTip='" + runes[2].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[2].runeName + "</b><br><i class='spreadElement'>Current hidden influences</i>";
+				returnString += "</td><td>";
+				returnString += "<sup class='spreadElement'>5</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[4].fileName + "' toolTip='" + runes[4].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[4].runeName + "</b><br><i class='spreadElement'>Current state of affairs</i>";
+				returnString += "</td><td>";
+				returnString += "<sup class='spreadElement'>7</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[6].fileName + "' toolTip='" + runes[6].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[6].runeName + "</b><br><i class='spreadElement'>Your attitude towards present influences</i>";
+				returnString += "</td></tr><tr><td><i>The Past</i></td><td>";
+				returnString += "<sup class='spreadElement'>8</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[7].fileName + "' toolTip='" + runes[7].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[7].runeName + "</b><br><i class='spreadElement'>Hidden past influences</i>";
+				returnString += "</td><td>";
+				returnString += "<sup class='spreadElement'>1</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[0].fileName + "' toolTip='" + runes[0].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[0].runeName + "</b><br><i class='spreadElement'>Basic past influences</i>";
+				returnString += "</td><td>";				
+				returnString += "<sup class='spreadElement'>6</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[5].fileName + "' toolTip='" + runes[5].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[5].runeName + "</b><br><i class='spreadElement'>Your attitude about those events</i>";		
+				returnString += "</td></tr><tr><td colspan=4 id='runeresult'>Click on a rune for more info";
+				returnString += "</td></tr></table>";
+			break;
+			
+		case "treeoflife":
+			runes = pullUniqueFtharkRunes(10);
+
+				returnString = "<h3 class='spreadElement'>Tree of Life</h3><p><b>Note:</b> This spread is good for an overview of your life. The runes that share a line should be read as a pair.</p>";
+				returnString += "<table><tr><td>";
+				returnString += "<sup class='spreadElement'>1</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[0].fileName + "' toolTip='" + runes[0].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[0].runeName + "</b><br><i class='spreadElement'>Your highest ideals and standards</i>";
+				returnString += "</td><td></td></tr><tr><td>";
+				returnString += "<sup class='spreadElement'>3</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[2].fileName + "' toolTip='" + runes[2].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[2].runeName + "</b><br><i class='spreadElement'>Your physical and mental experiences</i>";
+				returnString += "</td><td>";
+				returnString += "<sup class='spreadElement'>2</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[1].fileName + "' toolTip='" + runes[1].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[1].runeName + "</b><br><i class='spreadElement'>Your current energy level</i>";
+				returnString += "</td></tr><tr><td>";
+				returnString += "<sup class='spreadElement'>5</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[4].fileName + "' toolTip='" + runes[4].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[4].runeName + "</b><br><i class='spreadElement'>Your most recent victories and successes</i>";
+				returnString += "</td><td>";
+				returnString += "<sup class='spreadElement'>4</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[3].fileName + "' toolTip='" + runes[3].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[3].runeName + "</b><br><i class='spreadElement'>Your ethics and personal moral code</i>";
+				returnString += "</td></tr><tr><td>";
+				returnString += "<sup class='spreadElement'>6</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[5].fileName + "' toolTip='" + runes[5].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[5].runeName + "</b><br><i class='spreadElement'>Your health and any issues there you may have</i>";
+				returnString += "</td><td></td></tr><tr><td>";
+				returnString += "<sup class='spreadElement'>8</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[7].fileName + "' toolTip='" + runes[7].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[7].runeName + "</b><br><i class='spreadElement'>Creativity, both physical and mental</i>";
+				returnString += "</td><td>";
+				returnString += "<sup class='spreadElement'>7</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[6].fileName + "' toolTip='" + runes[6].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[6].runeName + "</b><br><i class='spreadElement'>Personal issues of love and trust/i>";
+				returnString += "</td></tr><tr><td>";				
+				returnString += "<sup class='spreadElement'>9</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[8].fileName + "' toolTip='" + runes[8].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[8].runeName + "</b><br><i class='spreadElement'>Your powers of imagination and creativity</i>";		
+				returnString += "</td><td></td></tr><tr><td>";
+				returnString += "<sup class='spreadElement'>10</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[9].fileName + "' toolTip='" + runes[9].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[9].runeName + "</b><br><i class='spreadElement'>Your living conditions and the state of your home</i>";
+				returnString += "</td><td></td></tr><tr><td colspan=2 id='runeresult'>Click on a rune for more info";
+				returnString += "</td></tr></table>";
+			break;
+			
+		case "cosmicaxis":
+			runes = pullUniqueFtharkRunes(11);
+
+				returnString = "<h3 class='spreadElement'>Cosmic Axis</h3><table><tr><td>";
+				returnString += "<sup class='spreadElement'>10</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[9].fileName + "' toolTip='" + runes[9].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[9].runeName + "</b><br><i class='spreadElement'>Your unconscious response to the outcome in #9</i>";
+				returnString += "</td><td>";
+				returnString += "<sup class='spreadElement'>9</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[8].fileName + "' toolTip='" + runes[8].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[8].runeName + "</b><br><i class='spreadElement'>The major outcome of the issue at hand</i>";
+				returnString += "</td><td>";
+				returnString += "<sup class='spreadElement'>11</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[10].fileName + "' toolTip='" + runes[10].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[10].runeName + "</b><br><i class='spreadElement'>Your conscious response to #9</i>";
+				returnString += "</td></tr><tr><td></td><td>";
+				
+				returnString += "<sup class='spreadElement'>8</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[7].fileName + "' toolTip='" + runes[7].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[7].runeName + "</b><br><i class='spreadElement'>If you do nothing, this will be the result</i>";
+				returnString += "</td><td></td></tr><tr><td>";
+				
+				returnString += "<sup class='spreadElement'>6</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[5].fileName + "' toolTip='" + runes[5].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[5].runeName + "</b><br><i class='spreadElement'>Your current unconscious responses</i>";
+				returnString += "</td><td>";
+				returnString += "<sup class='spreadElement'>5</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[4].fileName + "' toolTip='" + runes[4].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[4].runeName + "</b><br><i class='spreadElement'>The present</i>";
+				returnString += "</td><td>";
+				returnString += "<sup class='spreadElement'>7</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[6].fileName + "' toolTip='" + runes[6].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[6].runeName + "</b><br><i class='spreadElement'>Your conscious responses</i>";
+				returnString += "</td></tr><tr><td></td><td>";
+				
+				returnString += "<sup class='spreadElement'>4</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[3].fileName + "' toolTip='" + runes[3].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[3].runeName + "</b><br><i class='spreadElement'>Results of these influences from the past</i>";
+				returnString += "</td><td></td></tr><tr><td>";	
+				
+				returnString += "<sup class='spreadElement'>3</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[2].fileName + "' toolTip='" + runes[2].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[2].runeName + "</b><br><i class='spreadElement'>Your conscious response to #1</i>";		
+				returnString += "</td><td>";
+				returnString += "<sup class='spreadElement'>1</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[0].fileName + "' toolTip='" + runes[0].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[0].runeName + "</b><br><i class='spreadElement'>Major past influence on the present</i>";
+				returnString += "</td><td>";
+				returnString += "<sup class='spreadElement'>2</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[1].fileName + "' toolTip='" + runes[1].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[1].runeName + "</b><br><i class='spreadElement'>Your unconscious response to the influence in #1</i>";
+				returnString += "</td></tr><tr><td colspan=3 id='runeresult'>Click on a rune for more info";
+				returnString += "</td></tr></table>";
+			break;
+			
+		case "fourquarters":
+			runes = pullUniqueFtharkRunes(11);
+
+				returnString = "<h3 class='spreadElement'>The Four Quarters</h3><p>This spread represents the four quarters of the year, and can be used to divine an overall look at your life from six months back to six months in the future</p>";
+				returnString += "<table><tr><td class='firstq'>First quarter<br><i>Your present state of mind</i></td><td colspan=2 class='thirdq'>Third quarter<br><i>If you do nothing, this is what will result</i></td><td class='secondq'>Second quarter<br><i>Influences that are acting<br>upon the question</td></tr><tr><td class='firstq'>";
+				returnString += "<sup class='spreadElement'>2</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[1].fileName + "' toolTip='" + runes[1].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[1].runeName + "</b><i  class='spreadElement off'>First quarter<br><i>Your present state of mind</i>";
+				returnString += "</td><td class='thirdq'>";
+				returnString += "<sup class='spreadElement'>3</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[2].fileName + "' toolTip='" + runes[2].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[2].runeName + "</b><i class='spreadElement off'>Third quarter: If you do nothing, this is what will result</i>";
+				returnString += "</td><td class='thirdq'>";
+				returnString += "<sup class='spreadElement'>4</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[3].fileName + "' toolTip='" + runes[3].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[3].runeName + "</b><i class='spreadElement off'>Third quarter: If you do nothing, this is what will result</i>";
+				returnString += "</td><td class='secondq'>";				
+				returnString += "<sup class='spreadElement'>5</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[4].fileName + "' toolTip='" + runes[4].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[4].runeName + "</b><i class='spreadElement off'>Second quarter: Influences that are acting<br>upon the question</i>";
+				returnString += "</td></tr><tr><td class='firstq'>";
+				
+				returnString += "<sup class='spreadElement'>1</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[0].fileName + "' toolTip='" + runes[0].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[0].runeName + "</b><i class='spreadElement off'>First quarter: Your present state of mind</i>";
+				returnString += "</td><td colspan=2>";
+				returnString += "<sup class='spreadElement'>11</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[10].fileName + "' toolTip='" + runes[10].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[10].runeName + "</b><br><i class='spreadElement'>Overall tone of the spread.</i>";
+				returnString += "</td><td class='secondq'>";
+				returnString += "<sup class='spreadElement'>6</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[5].fileName + "' toolTip='" + runes[5].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[5].runeName + "</b><i class='spreadElement off'>Second quarter: Influences that are acting<br>upon the question</i>";
+				returnString += "</td></tr><tr><td class='firstq'>";
+				
+				returnString += "</td><td colspan=2 class='fourthq'>Fourth quarter<br><i>Possible outcome six months from now</i></td><td class='secondq'></td></tr><tr><td class='firstq'>";
+				
+				returnString += "<sup class='spreadElement'>10</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[9].fileName + "' toolTip='" + runes[9].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[9].runeName + "</b><i class='spreadElement off'>First quarter: Your present state of mind</i>";		
+				returnString += "</td><td class='fourthq'>";
+				returnString += "<sup class='spreadElement'>9</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[8].fileName + "' toolTip='" + runes[8].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[8].runeName + "</b><i class='spreadElement off'>Fourth quarter: Possible outcome six months from now</i>";
+				returnString += "</td><td class='fourthq'>";
+				returnString += "<sup class='spreadElement'>8</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[7].fileName + "' toolTip='" + runes[7].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[7].runeName + "</b><i class='spreadElement off'>Fourth quarter: Possible outcome six months from now</i>";
+				returnString += "</td><td class='secondq'>";
+				returnString += "<sup class='spreadElement'>7</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[6].fileName + "' toolTip='" + runes[6].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[6].runeName + "</b><i class='spreadElement off'>Second quarter: Influences that are acting<br>upon the question</i>";				
+				returnString += "</td></tr><tr><td colspan=5 id='runeresult'>Click on a rune for more info";
+				returnString += "</td></tr></table>";
+			break;
+			
+		case "runicwheel":
+			runes = pullUniqueFtharkRunes(13);
+
+				returnString = "<h3 class='spreadElement'>Runic Wheel</h3><p>There are no set specific meanings to the places in this spread. It is, however, meant to be read in order going counterclockwise</p>";
+				returnString += "<table><tr><td></td><td></td><td></td><td>";
+				returnString += "<sup class='spreadElement'>10</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[9].fileName + "' toolTip='" + runes[9].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[9].runeName + "</b><i class='spreadElement'></i>";
+				returnString += "</td><td></td><td></td><td></td></tr>";
+				
+				returnString += "<tr><td></td><td></td><td>";
+				returnString += "<sup class='spreadElement'>11</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[10].fileName + "' toolTip='" + runes[10].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[10].runeName + "</b><i class='spreadElement'></i>";
+				returnString += "</td><td></td><td>";
+				returnString += "<sup class='spreadElement'>9</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[8].fileName + "' toolTip='" + runes[8].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[8].runeName + "</b><i class='spreadElement'></i>";
+				returnString += "</td><td></td><td></td></tr>";
+				
+				returnString += "<tr><td></td><td>";
+				returnString += "<sup class='spreadElement'>12</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[11].fileName + "' toolTip='" + runes[11].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[11].runeName + "</b><i class='spreadElement'></i>";
+				returnString += "</td><td></td><td></td><td></td><td>";
+				returnString += "<sup class='spreadElement'>8</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[7].fileName + "' toolTip='" + runes[7].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[7].runeName + "</b><i class='spreadElement'></i>";
+				returnString += "</td><td></td></tr>";
+				
+				returnString += "<tr><td>";
+				returnString += "<sup class='spreadElement'>1</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[0].fileName + "' toolTip='" + runes[0].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[0].runeName + "</b><i class='spreadElement'></i>";
+				returnString += "</td><td></td><td></td><td>";
+				returnString += "<sup class='spreadElement'>13</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[12].fileName + "' toolTip='" + runes[12].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[12].runeName + "</b><i class='spreadElement'></i>";
+				returnString += "</td><td></td><td></td><td>";
+				returnString += "<sup class='spreadElement'>7</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[6].fileName + "' toolTip='" + runes[6].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[6].runeName + "</b><i class='spreadElement'></i>";
+				returnString += "</td></tr>";
+								
+				returnString += "<tr><td></td><td>";
+				returnString += "<sup class='spreadElement'>2</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[1].fileName + "' toolTip='" + runes[1].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[1].runeName + "</b><i class='spreadElement'></i>";
+				returnString += "</td><td></td><td></td><td></td><td>";
+				returnString += "<sup class='spreadElement'>6</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[5].fileName + "' toolTip='" + runes[5].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[5].runeName + "</b><i class='spreadElement'></i>";
+				returnString += "</td><td></td></tr>";
+				
+				returnString += "<tr><td></td><td></td><td>";
+				returnString += "<sup class='spreadElement'>3</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[2].fileName + "' toolTip='" + runes[2].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[2].runeName + "</b><i class='spreadElement'></i>";
+				returnString += "</td><td></td><td>";
+				returnString += "<sup class='spreadElement'>5</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[4].fileName + "' toolTip='" + runes[4].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[4].runeName + "</b><i class='spreadElement'></i>";
+				returnString += "</td><td></td><td></tr>";
+				
+				returnString += "<tr><td></td><td></td><td></td><td>";
+				returnString += "<sup class='spreadElement'>4</sup><a href='#' class='ftharkRuneLink'><img src='img/runes/" + runes[3].fileName + "' toolTip='" + runes[3].toolTip + "' class='spreadElement'></a><br>";
+				returnString += "<b class='spreadElement'>" + runes[3].runeName + "</b><i class='spreadElement'></i>";
+				returnString += "</td><td></td><td></td><td></td></tr>";
+				
+				returnString += "</td></tr><tr><td colspan=7 id='runeresult'>Click on a rune for more info";
 				returnString += "</td></tr></table>";
 			break;
 
@@ -934,7 +1358,7 @@ $(document).ready( function() {
 				nextSabbatn = sabbatnames[i];
 				return (nextSabbatn + ", " + nextSabbatd);
 			}
-			else {
+			else{
 			}
 		}
 	}
@@ -953,6 +1377,52 @@ $(document).ready( function() {
 		$("#runeresult").empty()
 		data = $(this).children("img").attr("tooltip");
 		$("#runeresult").append(data);
+	});
+	
+	// Makes the app have navigation tabs
+	$("#ftharkRunes").tabs({ active: 0 });
+	
+	// This is for downloading rune spreads. I'm basically digging through the DOM and re-building the objects I made earlier. I'm aware that I could build both the printed tables and the print string simultaneously above, but I've already written everything above and don't want to go back over it. Plus, this way I get to learn about building strings from existing HTML elements.
+	$("#saveSpreadTxt").click(function() {
+		// Here I'm grabbing everything that I've tagged with "spreadElement." I specifically tagged these so I could pull them out later
+		spreadElements = Array.from(document.getElementById("ftharkSpreadResult").getElementsByClassName("spreadElement"));
+		var printString = "";
+		var getRune = { SpreadName: "", Order: "", Description: "", Name: "", Meaning: "" };
+		
+		// Loop through the resulting array and extract the text contents. There will be a special case for the filename, since that needs to be cleaned up and made pretty
+		for(i = 0; i < spreadElements.length; i++){			
+			// If the element is in an h3 tag, it needs to go on its own line since it's the name of the spread
+			if(spreadElements[i].nodeName == "H3"){
+				getRune.SpreadName = spreadElements[i].innerHTML;
+				printString += spreadElements[i].innerHTML + "\n";
+			}
+			// If the element is in a <sup> tag, it marks the order of the runes
+			else if(spreadElements[i].nodeName == "SUP"){
+				getRune.Order = spreadElements[i].innerHTML;
+			}
+			// If the element is in an img tag, we'll need to extract the tooltip
+			else if(spreadElements[i].nodeName == "IMG"){
+				// I've replaced all commas with their HTML entity because they break CSV formatting
+				getRune.Description = spreadElements[i].getAttribute("toolTip").replaceAll(",", "&comma;");
+			}
+			// If the element is in a <b> tag, it's the name of the rune.
+			else if(spreadElements[i].nodeName == "B"){
+				getRune.Name = spreadElements[i].innerHTML;
+			}
+			// If the element is in an i tag, it's the position/meaning of the rune. Also, this is the last thing I'll expect on the rune, so we can push everything to the print string now
+			else if(spreadElements[i].nodeName == "I"){
+				getRune.Meaning = spreadElements[i].innerHTML;
+				printString += getRune.Order + "," + getRune.Name + "," + getRune.Description + "," + getRune.Meaning + "," + "\n";
+			}
+			else{
+				printString += "Error: tag not found";
+			}
+		}
+		
+		console.log(printString);
+		// Here's where I tie it up and send it to a file
+		var filename = "FtharkSpread-" + dateOutput + ".csv";
+		downloadFile(filename,printString);
 	});
 
 });
