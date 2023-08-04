@@ -1,0 +1,28 @@
+#paganTools .content { overflow: scroll; max-height: 600px; }
+	#paganTools #wheelOfTheYear { text-align: center; font-size: 1.2em; }
+	#wruneResult { margin-top: 1em; }
+	#fruneResult { width: 100%; clear: both; margin-top: 1em; }
+	#fruneResult .frune { width: 30%; float: left; border: 1px solid #000; border-radius: 10px; text-align: center; padding: 0.4em; margin-bottom: 1em; }
+
+
+#paganTools .currentDate { font-weight: bold; font-size: 1.2em; color: #97133e; } 
+
+#ftharkReader { width: 760px; }
+	#ftharkReader .content { overflow: scroll; max-height: 600px; }
+	#ftharkSpreadResult table { margin-top: 1em; border: 1px solid #000; width: 100%; padding: 0; }
+	#ftharkSpreadResult table td { text-align: center; }
+	#ftharkSpreadResult table td#runeresult { border-top: 1px solid #000; padding-top: 1em; }
+	
+	td.firstq { background-color: #fbf8d9; }
+	td.secondq { background-color: #f6c885; }
+	td.thirdq { background-color: #e99d95; }
+	td.fourthq { background-color: #bbddbe; }
+	
+#runeDictionary table tr{
+	border-bottom: 1px dotted #000;
+	padding: 0.2em;
+}
+#runeDictionary table td {
+	vertical-align: top;
+	padding: 0.2em;
+}

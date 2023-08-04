@@ -1,3 +1,32 @@
+/* ======== jQuery overrides go here ======== */
+	.ui-dialog-titlebar.ui-widget-header { background: #df5e88 url("images/ui-bg_highlight-soft_75_cccccc_1x100.png") 50% 50% repeat-x; }
+	.ui-widget-header { background: #DF5E88; }
+	.ui-tabs .ui-tabs-nav li.ui-tabs-active { background: #F6EFA6; }
+	.ui-tabs .ui-tabs-nav li { background: #f39bb7; }
+	.ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active, a.ui-button:active, .ui-button:active, .ui-button.ui-state-active:hover { border: 1px solid #2d2d2d; }
+	.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default, .ui-button, html .ui-button.ui-state-disabled:hover, html .ui-button.ui-state-disabled:active { border: 1px solid #2d2d2d; }
+	.ui-widget.ui-widget-content { background-color: #f6efa6; border: 1px solid #2d2d2d; }
+	
+	.ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button { font-family: monospace; }
+	
+	.ui-widget { font-family: monospace; }
+	
+	.ui-widget input[type=button] { 
+		background: #df5e88;
+		border: 1px solid #97133e;
+		border-radius: 8px;
+		font-family: monospace;
+		padding: 0.3em;
+		min-width: 75px;
+	} 
+		.ui-widget input[type=button]:hover { background-color: #faa5c1; }
+
+	.ui-accordion .ui-accordion-header { background: #f6ab6c; font-family: monospace; }	
+	
+	.beginMenuLinks .ui-state-active { background: #df5e88; border: 0px; }
+
+/* ======== My styles start here ======== */
+
 body { 
 	background-color: #6ea6a8;
 	background-image: url("../img/Decadence.png");
@@ -8,6 +37,7 @@ body {
 
 body, p, div {
 	font-family: monospace;
+	scrollbar-color: #DF5E88 #f6ab6c;
 }
 input[type=button], input[type=file] {
 	background: #df5e88;
@@ -17,6 +47,9 @@ input[type=button], input[type=file] {
 	padding: 0.3em;
 	min-width: 75px;
 	box-shadow: inset 1px 1px 0px 0px #f6ab6c, inset -1px -1px 0px 0px #97133e;
+}
+input[type=button]:hover {
+	cursor: pointer;
 }
 input[type=text] {
 	font-family: monospace;
@@ -49,6 +82,7 @@ div.window {
 	width: 600px;
 	position: absolute;
 	height: auto;
+	box-shadow: 1px 1px 0px 0px #a02a50, -1px -1px 0px 0px #a02a50;
 }
 	div.menuBar {
 		border-bottom: 1px solid #353535;
@@ -93,7 +127,6 @@ div.window {
 			padding: 0px;
 			background: none;
 			border: 0px;
-			font-size: 0.8em;
 		}
 			.progMenu .menu .ui-menu li { display: block; padding: 0.5em; min-width: 75px; border: none; }
 			.progMenu .menu li, .progMenu .menu li li {
@@ -129,7 +162,7 @@ div.window {
 		background-color: #df5e88;
 		bottom: 1.4em;
 		padding: 0px;
-		margin: 0px;
+		margin: 0px 0px 1em 0px;
 	}
 		.beginMenuLinks ul { margin: 0; padding: 1em 0px 1em 0px; }
 		.beginMenuLinks li {
@@ -139,7 +172,9 @@ div.window {
 			padding: 1em 0.5em 1em 0.5em;
 			margin: 0;
 		}
-		.beginMenuLinks li:hover { background-color: #97133e; }
+		.beginMenuLinks li:hover { background-color: #df5e88; }
+		.beginMenuLinks a { text-decoration: none; }
+		.beginMenuLinks ul.ui-menu { width: 250px; }
 	
 	#minimizedApps	{ margin: 0 0 0 100px; border: 0px solid #000; height: 100%; padding: 0px; width: calc(100% - 400px); margin-top: -30px; }
 		#minimizedApps li { width: 200px; bottom: 10px; display: flex; border: 1px solid #97133e; float: left; padding: 0.5em; margin-right: 5px; background-color: #ed84a6; }
@@ -185,34 +220,3 @@ div.window {
 	#csvEdit table.csvDisplay tr:hover { background: #c1eced; }
 
 #gamesFolder iframe { width: 100%; min-height: 500px; border: 0px; }
-
-#paganTools .content { overflow: scroll; max-height: 600px; }
-	#paganTools #wheelOfTheYear { text-align: center; font-size: 1.2em; }
-	#wruneResult { margin-top: 1em; }
-	#fruneResult { width: 100%; clear: both; }
-	#fruneResult .frune { width: 30%; float: left; border: 1px solid #000; border-radius: 10px; text-align: center; padding: 0.4em; }
-
-#paganTools .currentDate { font-weight: bold; font-size: 1.2em; color: #97133e; } 
-
-#ftharkReader { width: 760px; }
-	#ftharkReader .content { overflow: scroll; max-height: 600px; }
-	#ftharkSpreadResult table { margin-top: 1em; border: 1px solid #000; width: 100%; }
-	#ftharkSpreadResult table td { text-align: center; }
-	#ftharkSpreadResult table td#runeresult { border-top: 1px solid #000; padding-top: 1em; }
-}
-	
-/* ======== jQuery overrides go here ======== */
-	.ui-dialog-titlebar.ui-widget-header { background: #df5e88 url("images/ui-bg_highlight-soft_75_cccccc_1x100.png") 50% 50% repeat-x; }
-	.ui-widget-content { background-color: #f6efa6; }
-	
-	.ui-widget input[type=button] { 
-		background: #df5e88;
-		border: 1px solid #97133e;
-		border-radius: 8px;
-		font-family: monospace;
-		padding: 0.3em;
-		min-width: 75px;
-	} 
-		.ui-widget input[type=button]:hover { background-color: #faa5c1; }
-
-	.ui-accordion .ui-accordion-header { background: #f6ab6c; font-family: monospace; }	
