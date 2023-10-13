@@ -1269,58 +1269,51 @@ $(document).ready( function() {
 	// Here's where the date is used
 	$("#paganTools .currentDate").append(dateOutput);
 
-	// Original Snippet: https://gist.github.com/endel/dfe6bb2fbe679781948c
-	// Example usage: Moon.phase('2018', '01', '19');
-	var Moon = {
-	  phases: ['new-moon', 'waxing-crescent-moon', 'quarter-moon', 'waxing-gibbous-moon', 'full-moon', 'waning-gibbous-moon', 'last-quarter-moon', 'waning-crescent-moon'],
-	  // Get the current phase
-	  phase: function  getPhase(year, month, day) {
-		let c = e = jd = b = 0;
-
-		if (month < 3) {
-		  year--;
-		  month += 12;
+	// This uses the SunCalc js file that's imported on the index page. As far as the lat/long coordinates are concerned, I'd eventually like to add some way of customizing these.
+	var latitude = 33.909760;
+	var longitude = -98.500847;
+	var timeAndDate = new Date();
+	var phaseName = "";
+	
+	var currentMoonPos = SunCalc.getMoonPosition(timeAndDate, latitude, longitude)
+	var currentPhase = SunCalc.getMoonIllumination(timeAndDate);;
+	
+	currentPhase.phase = currentPhase.phase.toFixed(2);
+	// This converts the result into a nice pretty moon name
+	if(currentPhase.phase == 0)
+		phaseName = "New Moon";
+	else if(0 < currentPhase.phase < 0.25)
+		phaseName = "Waxing Crescent";
+	else if(currentPhase.phase == 0.25)
+		phaseName = "First Quarter";
+	else if(0.25 < currentPhase.phase < 0.5)
+		phaseName = "Waxing Gibbous";
+	else if(currentPhase.phase ==  0.5)
+		phaseName = "Full Moon";
+	else if(0.5 < 0.7455093032886783 < 0.75)
+		phaseName = "Waning Gibbous";
+	else if(currentPhase.phase == 0.75)
+		phaseName = "Last Quarter";
+	else if(0.75 < currentPhase.phase)
+		phaseName = "Waning Crescent";
+	
+	// I couldn't find a library I liked that included easy methods for finding the next moon phase, so I'm doing this the stupid way. Basically I'm just checking the phase for the next 30 days and returning the date it ends up being full on
+	timeAndDate2 = new Date();
+	var nextMoonPhase = 0;
+	var nextMoonPhaseDate = "";
+	for(l = 0; l < 32; l++){
+		nextMoonPhase = SunCalc.getMoonIllumination(timeAndDate2.setDate(timeAndDate2.getDate() + 1));
+		n = nextMoonPhase.phase.toFixed(1);
+		if(n == 0.5){
+			nextMoonPhaseDate = timeAndDate2.setDate(timeAndDate2.getDate() + 1);
+			break;
 		}
+		else
+			nextMoonPhaseDate = "Not found";
+	}
 
-			++month;
-			c = 365.25 * year;
-			e = 30.6 * month;
-			jd = c + e + day - 694039.09; // jd is total days elapsed
-			
-			// This is for getting the date of the next full moon. I chose the most recent for my base calcs since it's easy
-			fmyear = 2023;
-			fmmonth = 7;
-			fmday = 3;
-			
-			// Multiply lunar period by number of months between this and the previous full moon.
-			// subtract prev. year from current
-			tyear = year - fmyear;
-			// multiply the difference by 12 to get the number of months in between. Add the number of months we're currently into the year
-			tmonths = (tyear*12) + (month-fmmonth);
-			// Multiply the result by the lunar period, then add it to the date of a known full moon
-			res = 29.5305882 * tmonths;
-			resa = fmday + res;
-			// parseInt gives us an integer and gets rid of that ugly decimal. 30.6 is the average number of days in a month
-			resb = parseInt(resa % 30.6);
-			
-			full_moon_day = month + "/" + resb + "/" + year;
-			
-			jd /= 29.5305882; // divide by the moon cycle
-			b = parseInt(jd); // int(jd) -> b, take integer part of jd
-			jd -= b; // subtract integer part to leave fractional part of original jd
-			b = Math.round(jd * 8); // scale fraction from 0-8 and round
-
-			if (b >= 8) b = 0; // 0 and 8 are the same so turn 8 into 0
-			return {phase: b, name: Moon.phases[b], nextFull: full_moon_day }
-		}
-	};
-				
-	// This puts the current Moon Phase in the PaganTools window below.
-	var splitDate = dateOutput.split("/");
-	var currentPhase = Moon.phase(splitDate[2], splitDate[0], splitDate[1]);
-
-	$("#paganTools .lunarPhase").append(currentPhase.name);
-	$("#paganTools .nextFull").append(currentPhase.nextFull);
+	$("#paganTools .lunarPhase").append(phaseName);
+	$("#paganTools .nextFull").append(timeAndDate2);
 
 	// Function to get the next upcoming Sabbat
 	function getSabbat(month, day){

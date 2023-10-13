@@ -17,8 +17,44 @@ function insertCell(){
 	++ccounter;
 };
 
+function insertRow(){
+	// This is so I can match the existing classes and make sure the counts are right
+	realCount = rcounter+5;
+	// This checks if we're on an even row, and if we are, adds a class for special styling
+	if(realCount % 2 == 0)
+		evenClass = " even";
+	else
+		evenClass = "";
+	
+	$(".csvDisplay").append('<tr class="added-tr' + rcounter + evenClass + '"> <td><input type="text" name="csv-text-r' + realCount + 'c1"></td> <td><input type="text" name="csv-text-r' + realCount + 'c2"></td> <td><input type="text" name="csv-text-r' + realCount + 'c3"></td> <td class="csv-td-r' + realCount + 'c4"><input type="text" name="csv-text-r' + realCount + 'c4"></td> </tr>');
+	++rcounter;
+};
+	
 // This is the code for the csvEditor. It must be loaded after jquery and jquery ui because it depends on both of them.
 $( function() {
+	$("#csv-aboutDialogue").dialog({
+		autoOpen: false
+	});
+	
+	$("#csv-about-menu").click(function() {
+		$("#csv-aboutDialogue").dialog("open");
+	});
+	
+	// This is the code for the Clear button. It's also called when loading a new sheet
+	$("#csvEdit .new").click(function clearSheet(){
+		// Open a modal dialog asking if we're sure
+		$("#csv-modalDialogue").dialog("open");
+		// Binds a clear textarea function to the "Yes" modal dialogue button
+		$("#csvEdit_ybtn").on("click", function(){
+				$("#csvEdit .csvDisplay input").val("");
+		});
+	});
+	
+	// Binds a close modal window event to both of the buttons on that dialogue. It feels weird to
+	// do it this way but it works
+	$("#csv-modalDialogue .dialogueBtn" ).click(function() {
+		$("#csv-modalDialogue").dialog("close");
+	});
 	
 	$("#csv-modalDialogue").dialog({
 		autoOpen: false
@@ -53,27 +89,9 @@ $( function() {
 			rcounter = 0;
 	});
 
-// This is where cell manipulation functions go
+// This is where cell manipulation functions go	
 	
-	// This is the code for the Clear button
-	$("#csvEdit .new").click(function(){
-		// Open a modal dialog asking if we're sure
-		$("#csv-modalDialogue").dialog("open");
-		// Binds a clear textarea function to the "Yes" modal dialogue button
-		$("#csvEdit_ybtn").on("click", function(){
-				$("#csvEdit .csvDisplay input").val("");
-		});
-	});
-	
-	// Binds a close modal window event to both of the buttons on that dialogue. It feels weird to
-	// do it this way but it works
-	$("#csv-modalDialogue .dialogueBtn" ).click(function() {
-		$("#csv-modalDialogue").dialog("close");
-	});
-	
-	
-	
-	// Binds a click event to the insert cell button that...adds a cell. I've marked it with a unique class for easy removal later
+	// Binds a click event to the insert cell button that...adds a cell. I've marked it with a unique CSS class for easy removal later
 	$("#insert-cell").click(function insertCell(){
 		// Adding a cell is more compliated. First we'll need to get the number of rows that are on screen. 
 		var rowCount = $(".csvDisplay tr").length;
@@ -107,6 +125,7 @@ $( function() {
 	
 	// This is where save & load functions go
 	function getCSVContents() {
+		
 		// Get the total number of rows we'll be looping through
 		var totalRows = $(".csvDisplay tr").length;
 		var totalCells = $(".csvDisplay td").length;
@@ -172,6 +191,7 @@ function parse(row){
 }
 
 function loadCsvFile() {
+//clearSheet();
   const data = document.querySelector(".csvDisplay");
   const [file] = document.querySelector("#csvEdit-open").files;
   const reader = new FileReader();
@@ -184,60 +204,73 @@ function loadCsvFile() {
 	  // I'm creating a copy of this string so that I don't have to move the reader to the beginning
 	  var countData = readData;
 	  
-	  console.log(readData);
 	  
 	  // Get the total number of rows currently on screen
 		var totalRows = $(".csvDisplay tr").length;
 		var totalCells = ($(".csvDisplay td").length)/totalRows;
 		var fileLength = readData.length;
 		var charIndex = 0;
-		console.log("Rows: " + totalRows + " | Cells: " + totalCells);
 		
 	  // Get total number of rows in the document
 		var fileRows = countData.match(/\r\n|\r|\n/g).length;
 		var matchStr = new RegExp(/,/g);
-		var fileCells = (countData.match(matchStr).length) / fileRows;
+		var fileCells = ((countData.match(matchStr).length) / fileRows)+1;
 		console.log("Rows in file: " + fileRows + " | Cells in file: " + fileCells);
 		
 		// Row counter
-		for(i = 0; i <= totalRows; ++i){
-			console.log(totalRows + "; " + i);
-			console.log("Now proccessing row number: " + i);
+		for(k = 0; k <= totalRows; ++k){
+
 			// Cell counter
-			for(j = 0; j <= totalCells; ++j){
-				console.log("Now processing cell number: " + j);
+			for(j = 1; j < totalCells + 1; ++j){
 				// This is how we find the cells on the screen
-				inputClass = "csv-text-r" + i + "c" + (j+1);
+				inputClass = "csv-text-r" + k + "c" + (j);
 				inputCheck = document.getElementsByClassName(inputClass);
 				
 					//If that cell exists
 					if(inputCheck.length != 0) {
-						console.log("The cell exists. Moving on");
 						// put the data in there using a while loop to print each character
 						while(readData.charAt(charIndex) != ","){
-							// Put that data in there!
-							$("." + inputClass).val($("." + inputClass).val() + readData.charAt(charIndex));
+							console.log("Data at " + charIndex + ": " + readData.charAt(charIndex));
+							if(readData.charAt(charIndex) == "\n"){
+								break;
+								//k++;
+							}
+							else if(readData.charAt(charIndex) != ""){
+								// Put that data in there!
+								$("." + inputClass).val($("." + inputClass).val() + readData.charAt(charIndex));
+							}
+							else {
+								break;
+							}
 							++charIndex;
 						}
 					}
 					else{
-						console.log("The cell doesn't exist, so I'm going to add it");
-						insertCell();
 						while(readData.charAt(charIndex) != ","){
-							console.log("The cell is added, so now I'm going to put the data in");
-							// Put that data in there!
-							$("." + inputClass).val($("." + inputClass).val() + readData.charAt(charIndex));
+							console.log("The input check returned false");
+							if(readData.charAt(charIndex) == "\n"){
+								insertRow();
+								break;
+								//k++;
+							}
+							else if(readData.charAt(charIndex) == ""){
+								console.log("There's no cell here: " + readData.charAt(charIndex));
+								insertCell();
+								break;
+								// Put that data in there!
+								//$("." + inputClass).val($("." + inputClass).val() + readData.charAt(charIndex));
+							}
+							else{
+								break;
+							}
 							++charIndex;
 						}
-					console.log("The if/else statements are done, so we're moving on");
 					}
-				console.log("Now I'm incrementing our cell counter");
 				++charIndex;
-
+				console.log("End of cell loop");
 			};
-			console.log("Cell loop is done. Moving to next row");
+			console.log("End of row loop");
 		};
-		console.log("Row loop is done, moving on");
     },
     //false
   );

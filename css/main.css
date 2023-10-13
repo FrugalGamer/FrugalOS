@@ -29,10 +29,11 @@
 
 body { 
 	background-color: #6ea6a8;
-	background-image: url("../img/Decadence.png");
+	background-image: url("../img/AncientContact_dithered.png");
 	background-size: 100%;
 	padding: 0;
 	margin: 0;
+	font-family: "Courier", monospace;
 }
 
 body, p, div {
@@ -82,7 +83,7 @@ div.window {
 	width: 600px;
 	position: absolute;
 	height: auto;
-	box-shadow: 1px 1px 0px 0px #a02a50, -1px -1px 0px 0px #a02a50;
+	box-shadow: 1px 1px 0px 0px #a02a50, -1px -1px 0px 0px #a02a50, 2px 2px 5px 5px rgb(31, 19, 32, 0.3);
 }
 	div.menuBar {
 		border-bottom: 1px solid #353535;
@@ -115,6 +116,25 @@ div.window {
 				height: 19px;
 				text-indent: -900px;
 			}
+	div.navBar {
+		background-color: #f6ab6c;
+		border: 1px solid #353535;
+		padding: 0.5em;
+	}
+		div.navBar .back { 
+			font-size: 1.2em;
+			text-decoration: none;
+			color: #353535;
+			background: url("../img/arrowLeft.png") no-repeat left center;
+			padding: 10px 0px 10px 30px;
+		}
+		div.navBar .forward { 
+			font-size: 1.2em;
+			text-decoration: none;
+			color: #353535;
+			background: url("../img/arrowRight.png") no-repeat right center;
+			padding: 10px 30px 10px 0px;
+		}
 	div.content {
 		background-color: #f6efa6;
 		padding: 1em;
@@ -137,25 +157,69 @@ div.window {
 				.progMenu .menu li a { width: 100%; }
 				.progMenu .menu li:hover a { border: 0; }
 
+#calendar { 
+	background-color: #df5e88;
+	position: absolute;
+	bottom: 3.5em;
+	right: 0;
+	padding: 0.5em;
+	border: 1px solid #353535;
+}
+	#calendar table td { padding: 2px; text-align: center; }
+	.calendar-title { font-weight: bold; background-color: #cf3a6a; }
+	#calendar thead { background-color: #cf3a6a; }
+	.day.today { background-color: #f6ab6c; }
+	.pad { background-color: #ed7ea2; }
+
 #taskBar {
 	background-color: #df5e88;
-	padding: 1em;
+	padding: 0.5em;
 	position: fixed;
 	bottom: 0;
 	width: 100%;
-	height: 1.5em;
+	height: 2.5em;
 }
 	#rightTaskbar {
-		width: 150px;
+		width: 110px;
 		right: 5px;
 		bottom: 5px;
 		position: fixed;
 		border: 1px solid #97133e;
 		padding: 0.5em;
 		text-align: right;
+		font-weight: bold;
 	}
-	#toggleBegin { text-decoration: none; font-weight: bold; font-style: italic; font-size: 1.5em; color: #000; }
-	
+		#rightTaskbar img { vertical-align: middle; }
+	#toggleBegin {
+		text-decoration: none;
+		font-weight: bold;
+		font-style: italic;
+		vertical-align: middle;
+		font-size: 1.5em;
+		color: #000;
+		display: table-cell;
+		width: 80px;
+		text-align: left;
+		height: 32px;
+		background-image: url("../img/pillBug_ball.png");
+		background-repeat: no-repeat;
+		padding-left: 38px;
+	}
+		#toggleBegin:hover { 
+			background-image: url("../img/pillBug.png");
+			background-repeat: no-repeat;
+			background-color: #4f4e83;
+			color: #DF5E88;
+		}
+	.beginMenuLinks.ui-widget.ui-widget-content, .beginMenuLinks.ui-widget-content ul{
+		background-color: #4f4e83;
+		background: url("../img/beginMenu_bg.jpg") repeat-y;
+		color: #F6EFA6;
+		box-shadow: 2px 2px 5px 5px rgb(31, 19, 32, 0.3);
+	}
+		.beginMenuLinks.ui-widget-content a { color: #F6EFA6; }
+		#beginMenu.ui-menu .ui-menu-item-wrapper { padding: 0; }
+		.beginMenuLinks.ui-menu .ui-menu-item-wrapper img, .beginMenuLinks.ui-widget-content ul img { vertical-align: middle; }
 	.beginMenuLinks { 
 		position: fixed;
 		width: 250px;
@@ -163,12 +227,13 @@ div.window {
 		bottom: 1.4em;
 		padding: 0px;
 		margin: 0px 0px 1em 0px;
+		color: #F6EFA6;
 	}
 		.beginMenuLinks ul { margin: 0; padding: 1em 0px 1em 0px; }
 		.beginMenuLinks li {
 			list-style-type: none;
 			padding: 1em;
-			border-bottom: 1px solid #97133e;
+			border-bottom: 1px solid #F6EFA6;
 			padding: 1em 0.5em 1em 0.5em;
 			margin: 0;
 		}
@@ -176,16 +241,30 @@ div.window {
 		.beginMenuLinks a { text-decoration: none; }
 		.beginMenuLinks ul.ui-menu { width: 250px; }
 	
-	#minimizedApps	{ margin: 0 0 0 100px; border: 0px solid #000; height: 100%; padding: 0px; width: calc(100% - 400px); margin-top: -30px; }
-		#minimizedApps li { width: 200px; bottom: 10px; display: flex; border: 1px solid #97133e; float: left; padding: 0.5em; margin-right: 5px; background-color: #ed84a6; }
+	#minimizedApps	{ margin: 0 0 0 120px; border: 0px solid #000; height: 100%; padding: 0px; width: calc(100% - 400px); margin-top: -30px; }
+		#minimizedApps li { width: 150px; bottom: 10px; display: flex; border: 1px solid #97133e; float: left; padding: 0.5em; margin-right: 5px; background-color: #ed84a6; box-shadow: 1px 1px 0px 0px #a02a50, inset 1px 1px 0px 0px #f8c0d2, inset -1px -1px 0px 0px #528d8f; }
+			#minimizedApps li:hover { background-color: #fcb8ce; }
 		#minimizedApps a { font-weight: bold; text-decoration: none; color: #5b132a; display: block; height: 100%; width: 100%; }
 			#minimizedApps a:visited { color: #5b132a; }
 	
 .off { display: none; }	
 .clear { width: 100%; clear: both; display: block; }
+.col-half { width: 50%; float: left; }
+.ascii { white-space: pre; line-height: 14px; }
+.flippedx { transform: scaleX(-1); }
+.flippedy { transform: scaleY(-1); }
+.flippedboth { transform: scaleY(-1), scaleX(-1); }
 
 /* ======== Specific window styles here ======== */
+#frugalFetch .content { background-color: #1f1320; color: #f6efa6; }
+#frugalFetch a { color: #DF5E88; }
+
+#imageViewer .navBar ul { padding: 0; margin: 0; }
+#imageViewer .navBar li { list-style-type: none; display: table-cell; padding: 0 0.5em; margin: 0; }
+	#imageViewer .navBar li:hover { cursor: pointer; }
 #imageViewer #staticImage { max-width: 100%; height: auto; }
+#imageViewer #imgContainer { overflow: scroll; }
+	#imageViewer #exifData { overflow: scroll; max-height: 200px; }
 
 #textpad_wa {
 	width: calc(100% - 1em);
@@ -220,3 +299,40 @@ div.window {
 	#csvEdit table.csvDisplay tr:hover { background: #c1eced; }
 
 #gamesFolder iframe { width: 100%; min-height: 500px; border: 0px; }
+
+#bookArea { overflow: scroll; }
+	#bookArea .arrows {
+		font-weight: bold;
+		font-size: 1.5em;
+		background-color: #DF5E88;
+		color: #F6EFA6; padding: 0.5em;
+		border-radius: 8px
+		}
+		#bookArea .arrows:hover { background-color: #8FCFD1; cursor: pointer; }
+	#bookArea #prev { float: left; }
+	#bookArea #next { float: right; }
+
+#tarotReader { width: 800px; }
+#tarotReader .content { overflow: scroll; max-height: 600px; }
+#tarotResult {
+	margin-top: 1em;
+}
+	#tarotResult .tcard {
+		float: left;
+		margin-right: 0.5em;
+		text-align: center;
+		width: 30%;
+	}
+	#tarotResult img {
+		width: 100%;
+		height: auto;
+	}
+	#tarotResult img.reversed {
+		-webkit-transform: scaleY(-1);
+  		transform: scaleY(-1);
+	}
+	
+#tarotSpreadResult img { width: 100px; }
+	#tarotSpreadResult #cardresult img {width: auto;}
+
+img.inline { float: left; width: 200px; margin-right: 1em; border: 1px solid #4f4e83; }

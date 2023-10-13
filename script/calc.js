@@ -7,7 +7,7 @@ $( function() {
 	// This is what displays the string to the user
 	calcString = "";
 	// This is for memory functions
-	memString = "";
+	memString = 0;
 	// This is for logic behind the scenes
 	calcFn = 0;
 
@@ -17,48 +17,51 @@ $( function() {
 		switch(printC){
 			case "C":
 				// If user presses the "C" button, then clear the console
-				memString = outputWindow.text() + ";";
 				outputWindow.text(0);
 				calcString = 0;
 				calcFn = 0;
 				// This tells the display to get rid of the leading 0 after it's been cleared once
 				clearOnNext = true;
-				console.log(calcFn);
+				memString = 0;
 				break;
 			case  "+":
 				// This adds the appropriate operator, adds it to the calcFn string, and sets the display to clear on the next button push.
 				calcString += "+";
 				calcFn += "+";
+				memString += "+";
 				clearOnNext = true;
-				console.log(calcFn);
 				break;
 			case  "-":
 				// This adds the appropriate operator, adds it to the calcFn string, and sets the display to clear on the next button push.
 				calcString += "-";
 				calcFn += "-";
+				memString += "-";
 				clearOnNext = true;
-				console.log(calcFn);
 				break;
 			case  "x":
 				// This adds the appropriate operator, adds it to the calcFn string, and sets the display to clear on the next button push.
 				calcString += "*";
 				calcFn += "*";
+				memString += "*";
 				clearOnNext = true;
-				console.log(calcFn);
 				break;
 			case  ".":
 				// This adds the appropriate operator, adds it to the calcFn string, and sets the display to clear on the next button push.
 				calcString += ".";
 				calcFn += ".";
+				memString += ".";
 				clearOnNext = true;
-				console.log(calcFn);	
 				break;
 			case "=":
 				// Evaluate the function
 				result = eval(calcFn);
-				console.log("result: " + result);
 				calcFn = result;
+				memString += "=" + result;
 				outputWindow.text(result);
+				
+				// This saves the input and then prints it to the memory section
+				$("#calc-mem-display").append(memString + "<br>");
+				memString = "";
 				break;
 				
 			default:
@@ -67,18 +70,29 @@ $( function() {
 					outputWindow.text(printC);
 					clearOnNext = false;
 				}
-				else
+				else{
 					outputWindow.text(outputWindow.text() + printC);
+				}
 				calcString += printC;
 				if(calcFn == 0){
 					// Don't add that leading zero! If you do, it throws off the eval() function
 					calcFn = printC;
+					memString = calcFn;
 				}
-				else
+				else{
 					calcFn += printC;
-				console.log(calcFn);
+					memString += printC;
+				}
 				break;				
 		}
+	});
+	
+	$("#calc-show-mem").click(function(){
+		$("#calc-memory").toggle();
+	});
+	
+	$("#calculator .calc-clear").click(function() {
+		$("#calc-mem-display").empty();
 	});
 
 });
