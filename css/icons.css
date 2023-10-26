@@ -1,0 +1,78 @@
+/* ======== jQuery overrides start here ======== */
+
+.ui-widget { font-family: "Courier", monospace; font-size: 1em; }
+
+/* ======== My styles start here ======== */
+
+body { 
+	padding: 0;
+	margin: 0;
+}
+
+body, p, div {
+	font-family: monospace;
+	scrollbar-color: #DF5E88 #f6ab6c;
+}
+
+div#desktopIcons {
+	float: right;
+	text-align: center;
+	padding: 0.5em;
+	margin-bottom: 1.5em;
+} 
+	#desktopIcons div { float: right; margin-right: 1em; }
+	#desktopIcons p { display: block; }
+	#desktopIcons span, #desktopIcons a span { background-color: #ffffff; border: 1px solid #353535; text-decoration: none; }
+div.window {
+	border: 1px solid #353535;
+	width: 600px;
+	position: absolute;
+	height: auto;
+	box-shadow: 1px 1px 0px 0px #a02a50, -1px -1px 0px 0px #a02a50;
+}
+	div.menuBar {
+		border-bottom: 1px solid #353535;
+		background-color: #df5e88;
+		padding: 1em;
+		overflow: hidden;
+		box-shadow: inset 1px 1px 0px 0px #f6ab6c, inset -1px -1px 0px 0px #97133e;
+	}
+		div.menuBar span { 
+			display: inline-block;
+			text-align: center;
+			width: calc(100% - 70px);
+			font-weight: bold;
+		}
+			div.menuBar a {
+				text-decoration: none;
+				font-weight: bold;
+				font-size: 1.1em;
+				display: inline-block;
+			}
+	div.content {
+		background-color: #f6efa6;
+		padding: 1em;
+	}
+
+.progMenu { margin-bottom: 0.5em; position: fixed; background: #f6efa6; width: 100%; top: 0; }
+		.progMenu .menu{
+			padding: 0px;
+			background: none;
+			border: 0px;
+		}
+			.progMenu .menu .ui-menu li { display: block; padding: 0.5em; min-width: 125px; border: none; }
+			.progMenu .menu li, .progMenu .menu li li {
+				width: auto;
+				display: inline-block;
+				border: none;
+			}
+			.progMenu .menu li, .progMenu .menu li li a { text-decoration: none; }
+				.progMenu .menu li a { width: 100%; color: #000; }
+				.progMenu .menu li:hover{ border: 0; background-color: #f6ab6c; }
+
+#iconsContainer { padding-top: 2.5em; }
+	.folderIcon { text-align: center; height: 62px; width: 80px; display: inline-block; vertical-align: top; float: left; margin-left: 1em; }
+	.folderIcon a { text-decoration: none; color: #000; }
+	
+.off { display: none; }	
+.clear { width: 100%; clear: both; display: block; }

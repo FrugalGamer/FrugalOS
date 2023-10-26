@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>Icon Viewer</title>
+	<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+  	<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+
+  	<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.13.2/themes/smoothness/jquery-ui.css">
+	<link type="text/css" rel="stylesheet" href="css/icons.css">
+
+	<script>
+		$(document).ready(function() {
+			$(".menu").menu();
+		});
+	</script>
+</head>
+
+<body>
+<div class="progMenu">
+	<ul class="menu">
+		<li><a href="#">Icon&nbsp;Size</a>
+			<ul>
+				<li><a href="#" id="iconViewer-small-menu">Small</a></li>
+				<li><a href="#" id="iconViewer-med-menu">Medium</a></li>
+				<li><a href="#" id="iconViewer-large-menu">Large</a></li>
+			</ul>
+		</li>
+		<li><a href="#" id="iconViewer-download-menu">Download</a>
+			<ul>
+				<li><a href="#" id="iconViewer-png-menu">PNG</a></li>
+				<li><a href="#" id="iconViewer-ico-menu">ICO</a></li>
+			</ul>
+		</li>
+		<li><a href="#" id="iconViewer-about-menu">About</a></li>
+	</ul>
+</div>			
+
+
+<div id="iconsContainer">
+	<div class="folderIcon">
+		<img src="img/icons/icon_accessFolder_1x.png" alt="Acessibility Folder"><br>
+		<span class="iconLabel">Accessibility Folder</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_accessibility_1x.png" alt="Acessibility"><br>
+		<span class="iconLabel">Accessibility</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_folderWait1_1x.png" alt="Folder waiting 1"><br>
+		<span class="iconLabel">Folder waiting 1</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_folderWait2_1x.png" alt="Folder waiting 2"><br>
+		<span class="iconLabel">Folder waiting 2</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_appWiz_1x.png" alt="App Wizard"><br>
+		<span class="iconLabel">App Wizard</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_briefcase_1x.png" alt="Briefcase"><br>
+		<span class="iconLabel">Briefcase</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_calendar_1x.png" alt="Calendar"><br>
+		<span class="iconLabel">Calendar</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_camera_1x.png" alt="Camera"><br>
+		<span class="iconLabel">Camera</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_cameraNet_1x.png" alt="Camera Net"><br>
+		<span class="iconLabel">Camera Net</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_cameraAdd_1x.png" alt="Camera Add"><br>
+		<span class="iconLabel">Camera Add</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_phone_1x.png" alt="Phone"><br>
+		<span class="iconLabel">Phone</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_phoneNet_1x.png" alt="Phone Net"><br>
+		<span class="iconLabel">Phone Net</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_phoneAdd_1x.png" alt="Phone Add"><br>
+		<span class="iconLabel">Phone Add</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_videos_1x.png" alt="Videos"><br>
+		<span class="iconLabel">Videos</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_videosNetwork_1x.png" alt="Videos Network"><br>
+		<span class="iconLabel">Videos Network</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_videosAdd_1x.png" alt="Videos Add"><br>
+		<span class="iconLabel">Videos Add</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_musicCD_1x.png" alt="Music CD"><br>
+		<span class="iconLabel">Music CD</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_cdDrive_1x.png" alt="CD Drive"><br>
+		<span class="iconLabel">CD Drive</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_cd_1x.png" alt="CD"><br>
+		<span class="iconLabel">CD</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_rss_1x.png" alt="RSS"><br>
+		<span class="iconLabel">RSS</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_rssFile_1x.png" alt="RSS File"><br>
+		<span class="iconLabel">RSS File</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_ram_1x.png" alt="RAM"><br>
+		<span class="iconLabel">RAM</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_helpFile_1x.png" alt="Help File"><br>
+		<span class="iconLabel">Help File</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_cleanDrive_1x.png" alt="Clean Drive"><br>
+		<span class="iconLabel">Clean Drive</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_mycomputer_1x.png" alt="Computer"><br>
+		<span class="iconLabel">Computer</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_mycomputer2_1x.png" alt="Computer 2"><br>
+		<span class="iconLabel">Computer 2</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_mycomputer3_1x.png" alt="Computer 3"><br>
+		<span class="iconLabel">Computer 3</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_computerSound_1x.png" alt="Computer Sound"><br>
+		<span class="iconLabel">Computer Sound</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_desktop_1x.png" alt="Desktop"><br>
+		<span class="iconLabel">Desktop</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_adminFolder_1x.png" alt="Admin Folder"><br>
+		<span class="iconLabel">Admin Folder</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_folder_1x.png" alt="Folder"><br>
+		<span class="iconLabel">Folder</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_calendarFolder_1x.png" alt="Calendar Folder"><br>
+		<span class="iconLabel">Calendar Folder</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_rssFolder_1x.png" alt="RSS Folder"><br>
+		<span class="iconLabel">RSS Folder</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_history_1x.png" alt="History"><br>
+		<span class="iconLabel">History</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_settings_1x.png" alt="Settings"><br>
+		<span class="iconLabel">Settings</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_networking_1x.png" alt="Networking"><br>
+		<span class="iconLabel">Networking</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_internetFolder_1x.png" alt="Internet Folder"><br>
+		<span class="iconLabel">Internet Folder</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_search_1x.png" alt="Search"><br>
+		<span class="iconLabel">Search</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_favorites_1x.png" alt="Favorites"><br>
+		<span class="iconLabel">Favorites</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_font_1x.png" alt="Font"><br>
+		<span class="iconLabel">Font</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_videoFolder_1x.png" alt="Movie Folder"><br>
+		<span class="iconLabel">Movie Folder</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_networkFolder_1x.png" alt="Network Folder"><br>
+		<span class="iconLabel">Network Folder</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_lanFolder_1x.png" alt="LAN Folder"><br>
+		<span class="iconLabel">LAN Folder</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_folderOpen_1x.png" alt="Open Folder"><br>
+		<span class="iconLabel">Open Folder</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_myDocuments_1x.png" alt="My Documents"><br>
+		<span class="iconLabel">My Documents</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_myDocuments2_1x.png" alt="My Documents 2"><br>
+		<span class="iconLabel">My Documents 2</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_myPictures_1x.png" alt="My Pictures"><br>
+		<span class="iconLabel">My Pictures</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_myVideos_1x.png" alt="My Videos"><br>
+		<span class="iconLabel">My Videos</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_myMusic_1x.png" alt="My Music"><br>
+		<span class="iconLabel">My Music</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_displaySettings_1x.png" alt="Display Settings"><br>
+		<span class="iconLabel">Display Settings</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_ejectUSB_1x.png" alt="Eject USB"><br>
+		<span class="iconLabel">Eject USB</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_ejectHDD_1x.png" alt="Eject HDD"><br>
+		<span class="iconLabel">Eject HDD</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_internet_1x.png" alt="Internet"><br>
+		<span class="iconLabel">Internet</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_globe_1x.png" alt="Global Network"><br>
+		<span class="iconLabel">Global Network</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_hierarchy_1x.png" alt="Hierarchy"><br>
+		<span class="iconLabel">Hierarchy</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_gearsFile_1x.png" alt="Gears File"><br>
+		<span class="iconLabel">Gears File</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_pillbug_1x.png" alt="System File"><br>
+		<span class="iconLabel">System File</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_diskette_1x.png" alt="Diskette"><br>
+		<span class="iconLabel">Diskette</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_diskDrive_1x.png" alt="Disk Drive"><br>
+		<span class="iconLabel">Disk Drive</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_hdd_1x.png" alt="Hard Drive"><br>
+		<span class="iconLabel">Hard Drive</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_usb_1x.png" alt="USB"><br>
+		<span class="iconLabel">USB</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_motherboard_1x.png" alt="Motherboard"><br>
+		<span class="iconLabel">Motherboard</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_cpu_1x.png" alt="CPU"><br>
+		<span class="iconLabel">CPU</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_mouse_1x.png" alt="Mouse"><br>
+		<span class="iconLabel">Mouse</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_helpBook_1x.png" alt="Help Book"><br>
+		<span class="iconLabel">Help Book</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_downloads_1x.png" alt="Downloads"><br>
+		<span class="iconLabel">Downloads</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_html_1x.png" alt="HTML File"><br>
+		<span class="iconLabel">HTML File</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_trash_1x.png" alt="Trash"><br>
+		<span class="iconLabel">Trash</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_messaging_1x.png" alt="Messaging"><br>
+		<span class="iconLabel">Messaging</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_email_1x.png" alt="Email"><br>
+		<span class="iconLabel">Email</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_mic_1x.png" alt="Microphone"><br>
+		<span class="iconLabel">Microphone</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_speaker_1x.png" alt="Speaker"><br>
+		<span class="iconLabel">Speaker</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_pillbugClosed_1x.png" alt="Pillbug Closed"><br>
+		<span class="iconLabel">Pillbug Closed</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_pillbugOpen_1x.png" alt="Pillbug Open"><br>
+		<span class="iconLabel">Pillbug Open</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_cassette_1x.png" alt="Cassette"><br>
+		<span class="iconLabel">Cassette</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_boomBox_1x.png" alt="Boom Box"><br>
+		<span class="iconLabel">Boom Box</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_imageEdit_1x.png" alt="Image Edit"><br>
+		<span class="iconLabel">Image Edit</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_image_1x.png" alt="Image"><br>
+		<span class="iconLabel">Image</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_fancyImage_1x.png" alt="Fancy Image"><br>
+		<span class="iconLabel">Fancy Image</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_jpg_1x.png" alt="JPG"><br>
+		<span class="iconLabel">JPG</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_bmp_1x.png" alt="BMP"><br>
+		<span class="iconLabel">BMP</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_png_1x.png" alt="PNG"><br>
+		<span class="iconLabel">PNG</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_gif_1x.png" alt="GIF"><br>
+		<span class="iconLabel">GIF</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_svg_1x.png" alt="SVG"><br>
+		<span class="iconLabel">SVG</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_vector_1x.png" alt="Vector"><br>
+		<span class="iconLabel">Vector</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_image2_1x.png" alt="Image File"><br>
+		<span class="iconLabel">Image File</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_keyboard_1x.png" alt="MIDI Keyboard"><br>
+		<span class="iconLabel">MIDI Keyboard</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_sound_1x.png" alt="Sound File"><br>
+		<span class="iconLabel">Sound File</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_chess_1x.png" alt="Chess"><br>
+		<span class="iconLabel">Chess</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_keys_1x.png" alt="Keys"><br>
+		<span class="iconLabel">Keys</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_printer_1x.png" alt="Printer"><br>
+		<span class="iconLabel">Printer</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_alert_1x.png" alt="Alert"><br>
+		<span class="iconLabel">Alert</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_contact_1x.png" alt="Contact"><br>
+		<span class="iconLabel">Contact</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_contact2_1x.png" alt="Contact 2"><br>
+		<span class="iconLabel">Contact 2</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_info_1x.png" alt="Info"><br>
+		<span class="iconLabel">Info</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_gear_1x.png" alt="Gear"><br>
+		<span class="iconLabel">Gear</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_clock_1x.png" alt="Clock"><br>
+		<span class="iconLabel">Clock</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_adminTools_1x.png" alt="Admin Tools"><br>
+		<span class="iconLabel">Admin Tools</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_app_1x.png" alt="Application"><br>
+		<span class="iconLabel">Application</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_programFiles_1x.png" alt="Program Files"><br>
+		<span class="iconLabel">Program Files</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_puzzle_1x.png" alt="Puzzle"><br>
+		<span class="iconLabel">Puzzle</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_wiki_1x.png" alt="Wiki"><br>
+		<span class="iconLabel">Wiki</span>
+	</div>
+	
+	<!--- Custom icons start here --->
+	<div class="folderIcon">
+		<img src="img/icons/icon_calculator_1x.png" alt="Calculator"><br>
+		<span class="iconLabel">Calculator</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_textpad_1x.png" alt="Textpad"><br>
+		<span class="iconLabel">Textpad</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_text_1x.png" alt="Text file"><br>
+		<span class="iconLabel">Text file</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_harddrive_1x.png" alt="Hard Drive"><br>
+		<span class="iconLabel">Hard Drive</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_browserStorage_1x.png" alt="Browser Storage"><br>
+		<span class="iconLabel">Browser Storage</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_csv_1x.png" alt="CSV Edit"><br>
+		<span class="iconLabel">CSV Edit</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_pentacle_1x.png" alt="Pagan Tools"><br>
+		<span class="iconLabel">Pagan Tools</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_games_1x.png" alt="Games"><br>
+		<span class="iconLabel">Games</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_cycloajs_1x.png" alt="Cycloa JS"><br>
+		<span class="iconLabel">Cycloa JS</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_imageViewer_1x.png" alt="Image Viewer"><br>
+		<span class="iconLabel">Image Viewer</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_fthark_1x.png" alt="Fthark Reader"><br>
+		<span class="iconLabel">Fthark Reader</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_tarot_1x.png" alt="Tarot Reader"><br>
+		<span class="iconLabel">Tarot Reader</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_henry_1x.png" alt="Henry Is Hungry"><br>
+		<span class="iconLabel">Henry Is Hungry</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_winamp_1x.png" alt="Winamp"><br>
+		<span class="iconLabel">Winamp</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_playlist_1x.png" alt="Playlist"><br>
+		<span class="iconLabel">Playlist</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_book_1x.png" alt="ePub Reader"><br>
+		<span class="iconLabel">ePub Reader</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_weather_1x.png" alt="Weather"><br>
+		<span class="iconLabel">Weather</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_jspaint_1x.png" alt="JS Paint"><br>
+		<span class="iconLabel">JS Paint</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_minesweeper_1x.png" alt="Minesweeper"><br>
+		<span class="iconLabel">Minesweeper</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_stickers_1x.png" alt="Stickers"><br>
+		<span class="iconLabel">Stickers</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_iconviewer_1x.png" alt="Icon Viewer"><br>
+		<span class="iconLabel">Icon Viewer</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_cards_1x.png" alt="Cards"><br>
+		<span class="iconLabel">Cards</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_cards2_1x.png" alt="Cards 2"><br>
+		<span class="iconLabel">Cards 2</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_solitaire_1x.png" alt="Solitaire"><br>
+		<span class="iconLabel">Solitaire</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_suits_1x.png" alt="Suits"><br>
+		<span class="iconLabel">Suits</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_fountainPen_1x.png" alt="Fountain Pen"><br>
+		<span class="iconLabel">Fountain Pen</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_freehandFile_1x.png" alt="Fountain Pen File"><br>
+		<span class="iconLabel">Fountain Pen File</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_flipy.png" alt="Flip Y-axis"><br>
+		<span class="iconLabel">Flip Y-axis</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_tb_clock.png" alt="Taskbar Clock"><br>
+		<span class="iconLabel">Taskbar Clock</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_email_16.png" alt="Email 16 Pixels"><br>
+		<span class="iconLabel">Email 16 Pixels</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_home_16.png" alt="Home 16px"><br>
+		<span class="iconLabel">Home 16px</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_github_16.png" alt="Github 16px"><br>
+		<span class="iconLabel">Github 16px</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_rotateLeft.png" alt="Rotate Left"><br>
+		<span class="iconLabel">Rotate Left</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_rotateRight.png" alt="Rotate Right"><br>
+		<span class="iconLabel">Rotate Right</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_flipx.png" alt="Flip X-axis"><br>
+		<span class="iconLabel">Flip X-axis</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_flipy.png" alt="Flip Y-axis"><br>
+		<span class="iconLabel">Flip Y-axis</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_close.png" alt="Close"><br>
+		<span class="iconLabel">Close</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_resize.png" alt="Resize"><br>
+		<span class="iconLabel">Resize</span>
+	</div>
+</div>
+</body>

@@ -30,6 +30,17 @@
 		dateOutput = (month<10 ? '0' : '') + month + '/' +
 			(day<10 ? '0' : '') + day + "/" + d.getFullYear();
 
+		// This just returns the date and other things so that I can grab it from other places in the page
+			function getCurrentDate(){
+				return dateOutput;
+			}
+
+		// Here's my calendar code
+		$('#calendar').calendar({ date: getCurrentDate() });
+		$("#rightTaskbar").click(function() { 
+			$("#calendar").toggle();
+		});
+
 	  // This makes all the windows draggable and brings them to focus when they're selected
 		$( ".draggable" ).draggable();
 		$(".draggable").click(function() {
@@ -73,39 +84,13 @@
 			$("body").css("background-image", "url(" + url + ")");
 			return false;
 		});
-
-		// This is for starting one of the games (Cycloa emulator). This should probably be moved to some place more logical
-
-		$("#cycloaLink").click(function(){
-	  	$.ajax({
-		    url: "files/CycloaJS-magistra/index.html",
-
-		    dataType: "jsonp",
-		 
-		    // Work with the response
-            success: function(dataWeGotViaJsonp){
-                var text = dataWeGotViaJsonp;
-
-                $('#progWindow').html(text);
-		    }
+		
+		$("#jspaint-link").click(function(){
+			$("#jspaint-iframe").attr("src", $("#jspaint-iframe").attr("https://jspaint.app/"));
+			showWindow("jspaint");
 		});
+
 	  });
-	  
-	  // This is for photo viewing functions
-	  $('#openFile').change(function(){
-        const file = this.files[0];
-		var imgData = "";
-        if (file){
-          let reader = new FileReader();
-          reader.onload = function(event){
-            $('#exifData p').append(event.target.result);
-            $('#staticImage').attr('src', event.target.result);
-			imgData = event.target.result;
-          }
-          reader.readAsDataURL(file);
-        }
-      });
-	});
   </script>
 
 <!--- Link scripts for specific apps here ---->
@@ -113,44 +98,87 @@
    <script src="script/calc.js"></script>
    <script src="script/textpad.js"></script>
    <script src="script/paganTools.js"></script>
+   <script src="script/tarot.js"></script>
    <script src="script/csvEdit.js"></script>
+   <script src="script/photoViewer.js"></script>
+   <script src="script/stickers.js"></script>
+   
+<!--- These scripts aren't mine --->
+	<script src="script/suncalc-master/suncalc.js"></script>
+	<script src="https://unpkg.com/webamp@1.5.0/built/webamp.bundle.min.js"></script>
+  <script src="https://unpkg.com/butterchurn@2.6.7/lib/butterchurn.min.js"></script>
+  <script src="https://unpkg.com/butterchurn-presets@2.4.7/lib/butterchurnPresets.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.5/jszip.min.js"></script>
+  <script src="script/epub.js"></script>
+  <script src="script/calendar.min.js"></script>
+  <script src="script/webamp.js"></script>
 </head>
 
-<body>
+<body onload="startTime()">
+<div id="stickersCanvas"></div>
     <div id="desktop">
 	<!------  Desktop icons are here ------->
 		<div id="desktopIcons">
 			<div>
-				<p><a href="#" onclick="showWindow('myComputer')"><img src="img/icon_mycomputer_2x.png" alt="My Computer"><br>
+				<p><a href="#" onclick="showWindow('myComputer')"><img src="img/icons/icon_mycomputer_2x.png" alt="My Computer"><br>
 				<span class="iconLabel">Computer</span></a></p>
 				
-				<p><a href="#" onclick="showWindow('welcomeTXT')"><img src="img/icon_text_2x.png" alt="Welcome.txt"><br>
+				<p><a href="#" onclick="showWindow('welcomeTXT')"><img src="img/icons/icon_text_2x.png" alt="Welcome.txt"><br>
 				<span class="iconLabel">Welcome.txt</a></span></p>
 				
-				<p><a href="#" onclick="showWindow('settings')"><img src="img/icon_settings_2x.png" alt="Settings"><br>
+				<p><a href="#" onclick="showWindow('creditsTXT')"><img src="img/icons/icon_text_2x.png" alt="Credits.txt"><br>
+				<span class="iconLabel">Credits.txt</a></span></p>
+				
+				<p><a href="#" onclick="showWindow('settings')"><img src="img/icons/icon_settings_2x.png" alt="Settings"><br>
 				<span class="iconLabel">Settings</span></a></p>
 				
-				<p><a href="#" onclick="showWindow('textpad')"><img src="img/icon_textpad_2x.png" alt="Textpad"><br>
+				<p><a href="#" onclick="showWindow('textpad')"><img src="img/icons/icon_textpad_2x.png" alt="Textpad"><br>
 				<span class="iconLabel">Textpad</span></a></p>
 
-				<p><a href="#" onclick="showWindow('calculator')"><img src="img/icon_calculator_2x.png" alt="Calculator"><br>
+				<p><a href="#" onclick="showWindow('calculator')"><img src="img/icons/icon_calculator_2x.png" alt="Calculator"><br>
 				<span class="iconLabel">Calculator</span></a></p>
 
-				<p><a href="#" onclick="showWindow('csvEdit')"><img src="img/icon_csv_2x.png" alt="csvEdit"><br>
+				<p><a href="#" onclick="showWindow('csvEdit')"><img src="img/icons/icon_csv_2x.png" alt="csvEdit"><br>
 				<span class="iconLabel">csvEdit</span></a></p>
 				
-				<p><a href="#" onclick="showWindow('gamesFolder')"><img src="img/icon_games_2x.png" alt="gamesFolder"><br>
+				<p><a href="#" onclick="showWindow('gamesFolder')"><img src="img/icons/icon_games_2x.png" alt="gamesFolder"><br>
 				<span class="iconLabel">Games</span></a></p>
 			</div>
 			<div>
-				<p><a href="#" onclick="showWindow('paganTools')"><img src="img/icon_pentacle_2x.png" alt="paganTools"><br>
+				<p><a href="#" onclick="showWindow('paganTools')"><img src="img/icons/icon_pentacle_2x.png" alt="paganTools"><br>
 				<span class="iconLabel">Pagan Tools</span></a></p>
 
-				<p><a href="#" onclick="showWindow('ftharkReader')"><img src="img/icon_fthark_2x.png" alt="ftharkReader"><br>
+				<p><a href="#" onclick="showWindow('ftharkReader')"><img src="img/icons/icon_fthark_2x.png" alt="ftharkReader"><br>
 				<span class="iconLabel">Fthark Reader</span></a></p>
+				
+				<p><a href="#" onclick="showWindow('tarotReader'); initializeTarot();"><img src="img/icons/icon_tarot_2x.png" alt="tarotReader"><br>
+				<span class="iconLabel">Tarot Reader</span></a></p>
 
-				<p><a href="#" onclick="showWindow('imageViewer')"><img src="img/icon_imageViewer_2x.png" alt="imageViewer"><br>
+				<p><a href="#" onclick="showWindow('imageViewer')"><img src="img/icons/icon_imageViewer_2x.png" alt="imageViewer"><br>
 				<span class="iconLabel">Image Viewer</span></a></p>
+
+				<p><a href="#" onclick="showWindow('folder-winamp')"><img src="img/icons/icon_folder_2x.png" alt="Webamp folder"><br>
+				<span class="iconLabel">Winamp</span></a></p>
+				
+				<p><a href="#" onclick="showWindow('ePubReader')"><img src="img/icons/icon_book_2x.png" alt="ePub Reader"><br>
+				<span class="iconLabel">ePub Reader</span></a></p>
+
+				<p><a href="#" onclick="initializeFetch()"><img src="img/icons/icon_terminal_2x.png" alt="frugalFetch"><br>
+				<span class="iconLabel">FrugalFetch</span></a></p>
+				
+				<p><a href="#" onclick="showWindow('weather')"><img src="img/icons/icon_weather_2x.png" alt="Today's Weather"><br>
+				<span class="iconLabel">Today's Weather</span></a></p>
+				<div class="folderIcon">
+					<a href="#" onclick="showWindow('minesweeper')"><img src="img/icons/icon_minesweeper_2x.png" alt="Minesweeper"><br>
+					<span class="iconLabel">Minesweeper</span></a></p>
+				</div>
+			</div>
+			<div>
+				<p><a href="#" id="jspaint-link"><img src="img/icons/icon_jspaint_2x.png" alt="JSPaint"><br>
+				<span class="iconLabel">JSPaint</span></a></p>
+				<p><a href="#" id="stickers-link" onclick="showWindow('stickers')"><img src="img/icons/icon_stickers_2x.png" alt="Stickers"><br>
+				<span class="iconLabel">Stickers</span></a></p>
+			</div>
 			</div>
 		</div>
 		
@@ -159,10 +187,19 @@
 				<span id="computerWindow" class="windowTitle">Image Viewer</span>
 				<a href="#" class="minimize">_</a> | <a href="#" class="close">X</a>
 			</div>
+			<div class="navBar">
+				<ul>
+					<li><img src="img/icons/icon_flipy.png" tooltip="Flip vertically" id="flipy"></li>
+					<li><img src="img/icons/icon_flipx.png" tooltip="Flip horizontally" id="flipx"></li>
+					<li><img src="img/icons/icon_rotateLeft.png" tooltip="Rotate counter clockwise" id="rotateleft"></li>
+					<li><img src="img/icons/icon_rotateRight.png" tooltip="Rotate clockwise" id="rotateright"></li>
+				</ul>
+			</div>
 			
 			<div class="content">
-				<!--canvas id="displayImage"></canvas><br-->
-				<img src="" id="staticImage"><br>
+				<div id="imgContainer">
+					<img src="" id="staticImage" style="transform: rotation(matrix(0,0,0,0,0,0));">
+				</div><br>
 				<input type="file" value="Open..." id="openFile">
 				
 				<details id="exifData">
@@ -183,7 +220,7 @@
 				<div class="bgPicker">
 					<h2>Backgrounds</h2>
 
-					<p><a href=""><img src="img/background1.jpg"></a> <a href=""><img src="img/CrystallinePlain.png"></a> <a href=""><img src="img/CyrPoint.jpg"></a> <a href=""><img src="img/DarkSeas.png"></a> <a href=""><img src="img/Decadence.png"></a> <a href=""><img src="img/IridescentSapdrinker.png"></a> <a href=""><img src="img/lapse.png"></a> <a href=""><img src="img/TerrideCrisis.png"></a> <a href=""><img src="img/TheFallofGharat.png"></a> <a href=""><img src="img/HappyHalloween.png"></a></p>
+					<p><a href=""><img src="img/AncientContact_dithered.png"></a> <a href=""><img src="img/CrystallinePlain_dithered.png"></a> <a href=""><img src="img/CyrPoint_dithered.png"></a> <a href=""><img src="img/DarkSeas_dithered.png"></a> <a href=""><img src="img/Decadence_dithered.png"></a> <a href=""><img src="img/IridescentSapdrinker_dithered.png"></a> <a href=""><img src="img/lapse_dithered.png"></a> <a href=""><img src="img/TerrideCrisis_dithered.png"></a> <a href=""><img src="img/TheFallofGharat_dithered.png"></a> <a href=""><img src="img/HappyHalloween_dithered.png"></a> <a href=""><img src="img/needMoreSpace_blue.png"></a> <a href=""><img src="img/needMoreSpace_deepBlue.png"></a> <a href=""><img src="img/needMoreSpace_orange.png"></a> <a href=""><img src="img/needMoreSpace_pastel2.png"></a> <a href=""><img src="img/needMoreSpace_pastelpink.png"></a></p>
 				</div>
 				To be added:
 				<ul>
@@ -238,37 +275,63 @@
 				<span id="computerWindow" class="windowTitle">Computer</span>
 				<a href="#" class="minimize">_</a> | <a href="#" class="close">X</a>
 			</div>
+			<div class="navBar">
+				<a href="#" class="back">Back</a> | <a href="#" class="forward">Forward</a>
+			</div>
 			
 			<div class="content">
 				<div class="folderIcon">
-					<a href=""><img src="img/icon_harddrive_2x.png" alt="Hard Drive"></a><br>
+					<a href=""><img src="img/icons/icon_harddrive_2x.png" alt="Hard Drive"></a><br>
 					<span class="iconLabel">OS Storage</span></a>
 				</div>
 				<div class="folderIcon">
-					<a href=""><img src="img/icon_browserStorage_2x.png" alt="BrowserStorage"></a><br>
+					<a href=""><img src="img/icons/icon_browserStorage_2x.png" alt="BrowserStorage"></a><br>
 					<span class="iconLabel">Browser Storage</span></a>
-				</div>				
+				</div>
+				<!--div class="folderIcon">
+					<a href=""><img src="img/icon_folder_2x.png" alt="Docs"></a><br>
+					<span class="iconLabel">Docs</span></a>
+				</div-->
+				<div class="folderIcon">
+					<a href="#" onclick="showWindow('pillbugTXT')"><img src="img/icons/icon_text_2x.png" alt="PillBug.txt"><br>
+					<span class="iconLabel">PillBug.txt</a></span>
+				</div>
+				<div class="folderIcon">
+					<a href="#" onclick="showWindow('todoTXT')"><img src="img/icons/icon_text_2x.png" alt="ToDo.txt"><br>
+					<span class="iconLabel">ToDo.txt</a></span>
+				</div>
+				<div class="folderIcon">
+					<a href="#" onclick="showWindow('iconViewer')"><img src="img/icons/icon_iconViewer_2x.png" alt="Icon Viewer"><br>
+					<span class="iconLabel">Icon Viewer</a></span>
+				</div>
 			</div>
 		</div>
 		
-		<div class="window draggable" id="welcomeTXT">
+		<div class="window draggable off" id="pillbugTXT">
 			<div class="menuBar">
-				<span id="introWindow" class="windowTitle">Welcome.txt</span>
+				<span id="computerWindow" class="windowTitle">PillBug.txt</span>
 				<a href="#" class="minimize">_</a> | <a href="#" class="close">X</a>
 			</div>
 			
 			<div class="content">
-				<h1>Welcome to FrugalOS</h1>
-
-				<p>FrugalOS is a combination programming practice/art experiment, and is my attempt to make a static workspace for myself using only raw HTML and Javascript, with an emphasis on open formats and sources.</p>
+				<h1>Why the Pill Bug?</h1>
 				
-				<p>This document will change throughout time as I add more to it.</p>
+				<p><img src="img/pillBug_rolled.jpg" alt="A little pillbug all rolled up. Image from Wikimedia Commons: https://commons.wikimedia.org/wiki/File:Schizidium.jpg" class="inline"> <i>Armadillidium vulgare</i> is a type of woodlouse in the order of isopods that feeds on decaying plant matter. In times of danger, it will curl itself into a ball, using its plates to protect itself. Though in large numbers they can become pests, they have very few other noxious traits, and are largely harmless, and endlessly entertaining to young children who enjoy digging in the dirt.</p>
 
-				<h2>Update Log</h2>
+				<p>As <a href="https://en.wikipedia.org/wiki/Detritivore">detritivores</a>, they enrich their environments by subsisting on refuse and returning its energy to the Earth. They transform what others see as trash into raw materials, and leave them better than they found them. They are extremely frugal creatures, harming little, taking little, and giving in return.</p>
 
-				<p>0.1 - Project begin</p>
-				
-				<h2>To Do List</h2>
+				<p>Would that we were all as frugal as the little pillbug.</p>
+			</div>
+		</div>
+
+		<div class="window draggable off" id="todoTXT">
+			<div class="menuBar">
+				<span id="computerWindow" class="windowTitle">ToDo.txt</span>
+				<a href="#" class="minimize">_</a> | <a href="#" class="close">X</a>
+			</div>
+			
+			<div class="content">
+				<h1>To Do</h1>
 				
 				<ul>
 					<li><strike>Make window code modular</strike></li>
@@ -280,13 +343,72 @@
 					<li><strike>Add backgrounds and switcher</strike></li>
 					<li><strike>Add CSV editor</strike></li>
 					<li><strike>Add image viewer</strike> - Would like to add more features eventually</li>
-					<li>Fix CsvEdit importing function</li>
+					<li>Fix CsvEdit importing function - almost done; need to add row/cell addition functions</li>
 					<li>Get started on a pixel editor</li>
-					<li>Get started on a solitaire/minesweeper game</li>
+					<li>Pillbug buddy</li>
 					<li>Add search function to TextPad and CSVEdit</li>
 					<li><strike>Finish adding mem function to calculator</strike></li>
 					<li>Add column/row names and sorting function to CSVEdit</li>
+					<li>Finish implementing Webamp playlists; may require a different, non-programmatic approach</li>
+					<li><strike>Finish Winamp skin</strike></li>
+					<li>Add download links for <strike>Winamp skin</strike> and system icon pack</li>
+					<li>Fthark download as .csv function is broken and needs to be fixed</li>
+					<li><strike>Image viewer is broken for some reason</strike></li>
 				</ul>	
+			</div>
+		</div>
+		
+		<div class="window draggable off" id="creditsTXT">
+			<div class="menuBar">
+				<span id="computerWindow" class="windowTitle">Credits.txt</span>
+				<a href="#" class="minimize">_</a> | <a href="#" class="close">X</a>
+			</div>
+			
+			<div class="content">
+				<h1>Credits</h1>
+				
+				<p><img src="img/PillBug_hanginout.jpg" alt="Where is that pillbug goin? Image from Wikimedia Commons: https://commons.wikimedia.org/wiki/Armadillidium_vulgare#/media/File:Armadillidium_vulgare_2418.JPG" class="inline"> Backgrounds 1-10 are courtesy of the <a href="https://modus-interactive.itch.io/bryce-render-pack-v1">Bryce Render pack volumes 1 and 2</a> by <a href="https://modus-interactive.itch.io/">Modus Interactive</a>. I dithered and modified the colors to match my theme using <a href="https://dithermark.com/">Dithermark</a>. Backgrounds 11-15 were made using <a href="https://the-l0bster.itch.io/i-need-more-space">I need more space</a> by <a href="https://the-l0bster.itch.io/">the-L0bster</a></p>
+				
+				<p>All icons are by me, <a href="https://thefrugalgamer.net">FrugalGamer</a></p>
+
+				<p>The moon calculations in Pagan Tools use <a href="https://github.com/mourner/suncalc">SunCalc.js</a> by <a href="https://agafonkin.com/">Vladimir Agafonkin</a></p>
+
+				<p><b>Music Credits</b><br>
+					The music accessible in the Winamp app is all licensed via Creative Commons or Public Domain, and were found in the Internet Archive. Links to each are below.<br>
+					<ul>
+						<li><a href="https://archive.org/details/essential-keygen-music" target="_external">Essential Keygen Music</a></li>
+						<li><a href="https://archive.org/details/19-83-wjv6yl" target="_external">19-83 - Haircuts for Men</a></li>
+						<li><a href="https://archive.org/details/lp_beethoven-complete-piano-music_alfred-brendel-zubin-mehta-heinz-wallberg" target="_external">Beethoven: The Complete Piano Music</a></li>
+					</ul></p>
+					
+				<p>ePub.js is what I've used to make the ePub Reader app, and is available on GitHub here:<br>
+				<a href="https://github.com/futurepress/epub.js/">https://github.com/futurepress/epub.js/</a></p>
+
+				<p>The calendar in the taskbar is by Benjamin Hall. <a href="https://github.com/benhall14/jquery-calendar" target="_external">Github link</a></p>
+			</div>
+		</div>		
+		
+		<div class="window draggable" id="welcomeTXT">
+			<div class="menuBar">
+				<span id="introWindow" class="windowTitle">Welcome.txt</span>
+				<a href="#" class="minimize">_</a> | <a href="#" class="close">X</a>
+			</div>
+			
+			<div class="content">
+				<h1>Welcome to FrugalOS</h1>
+
+				<p><img src="img/pillBug_crawling.png" alt="A lovely roly-poly crawling around. Image is from Wikimedia Commons here: https://commons.wikimedia.org/wiki/File:Armadillidium_vulgare_001.jpg" class="inline"> FrugalOS is a combination programming practice/art experiment, and is my attempt to make a static workspace for myself using only raw HTML and Javascript, with an emphasis on open formats and sources. Most of what I have here is something I use semi-frequently.</p>
+
+				<p>Like this sort of thing? There are lots of others here:<br>
+					<a href="https://github.com/syxanash/awesome-web-desktops">Awesome Web Desktops</a></p>
+
+				<h2>Links</h2>
+
+				<ul>
+					<li><a href="https://www.thefrugalgamer.net"><img src="img/icons/icon_home_16.png" alt="icon"> TheFrugalGamer.net</a></li>
+					<li><a href="mailto:bekah@thefrugalgamer.net"><img src="img/icons/icon_email_16.png" alt="icon"> Email me with feedback</a></li>
+					<li><a href="https://github.com/FrugalGamer/FrugalOS"><img src="img/icons/icon_github_16.png" alt="icon"> Github Repository</a></li>
+				</ul>
 			</div>
 		</div>
 
@@ -358,7 +480,7 @@
 							<li><a href="#" class="save">Save</a></li>
 							<li><a href="#" class="open">Open</a></li>
 						</ul></li>
-						<li><a href="#" class="help">About</a></li>
+						<li><a href="#" id="csv-about-menu">About</a></li>
 					</ul>
 				</div>
 				
@@ -402,8 +524,8 @@
 				<input type="file" value="Open..." id="csvEdit-open" onchange="loadCsvFile()" style="display: none;">
 				
 				<div class="off" id="csv-aboutDialogue" title="About CSVEdit">
-				<p>CSVEdit is a simple CSV editor that I've built so that I could learn programming. Currently, it allows you to create and save CSV files, and more features will be added soon.</p>
-			</div>
+					<p>CSVEdit is a simple CSV editor that I've built so that I could learn programming. Currently, it allows you to create, save, and load CSV files. You can also add and remove both rows and cells. More features to come!</p>
+				</div>
 			</div>
 		</div>
 		
@@ -416,6 +538,16 @@
 			<div class="content">
 				<iframe src="games.html">This requires frames</iframe>
 			</div>
+		</div>
+
+		<div class="window draggable off" id="gamesContainer">
+			<div class="menuBar">
+				<span id="games-span" class="windowTitle">Games</span>
+				<a href="#" class="minimize">_</a> | <a href="#" class="close">X</a>
+			</div>
+			
+				<div class="content">
+				</div>
 		</div>
 
 		<div class="window draggable off" id="paganTools">
@@ -454,24 +586,110 @@
 						<p>You can pull as many runes as you like by clicking the button above. Hover over each rune to see its meaning</p>
 					</div>		
 				</div>
-				<h2>Tarot Reading tools</h2>
 			</div>
 		</div>
 
+		<div class="window draggable off" id="tarotReader">
+			<div class="menuBar">
+				<span id="tarotReader-span" class="windowTitle">Tarot Reader</span>
+				<a href="#" class="minimize">_</a> | <a href="#" class="close">X</a>
+			</div>
+			
+			<div class="content">
+				<div class="progMenu">
+					<ul class="menu">
+						<li><a href="#" id="tarot-credits-menu">Credits</a>
+					</ul>
+				</div>
+
+				<h3>Tarot Reader</h3>
+				<p>Tarot Reader is an app that assists with the reading and learning about tarot cards.</p>
+				
+				<p>Select your deck: 
+				<select type="dropdown" value="Choose Deck" id="tarotDeckName">
+					<option value="riderwaitesmith">Rider-Waite-Smith</option>
+					<option value="marseilles">Marseilles</option>
+					<option value="publicdomain">Public Domain</option>
+					<option value="innerworld">Inner World Tarot</option>
+				</select></p>
+				
+				<div id="tarotCards">
+					<ul>
+						<li><a href="#singleCard">Single Card</a></li>
+						<li><a href="#cardSpreads">Card Spreads</a></li>
+						<li><a href="#cardDictionary">Tarot Dictionary</a></li>
+					</ul>
+				
+					<div id="singleCard">
+						<h3>Single Card</h3>
+						<p>You can pull as many cards as you like by clicking the "Draw single card" button, but they will not be unique as they are in the spreads section. Their meaning and other info will be displayed below.</p>
+						<input type="button" value="Draw single card" onclick="displayTarotCard()"> <input type="button" value="clear" onclick="clearDiv('tarotResult')">
+						<div id="tarotResult"></div>
+					</div>
+
+					<div id="cardSpreads">
+						<h3>Card Spreads</h3>
+
+						<p>Here you can pull specific spreads</p>
+						<select type="dropdown" value="Choose spread" id="tarotSpreadName">
+							<option value="threecard">Three card spread</option>
+							<option value="fourdwarves">The four dwarves</option>
+							<option value="crossofthor">The Cross of Thor</option>
+							<option value="fiveelements">The five elements</option>
+							<option value="fiveelements2">The five elements (alt)</option>
+							<option value="fourdwarves2">The four dwarves (alt)</option>
+							<option value="situation">Situation spread</option>
+							<option value="persona">The persona</option>
+							<option value="celticcross">Celtic cross</option>
+							<option value="runiccross">Runic cross</option>
+							<option value="career">Career mirror</option>
+							<option value="sevenworlds">Seven worlds spread</option>
+							<option value="combinedrunes">Combined runes spread</option>
+							<option value="mimirshead">Mimir's Head</option>
+							<option value="mimirshead2">Mimir's Head (alt)</option>
+							<option value="ninegrid">Grid of Nine</option>
+							<option value="treeoflife">Tree of Life</option>
+							<option value="cosmicaxis">Cosmic axis</option>
+							<option value="fourquarters">The four quarters</option>
+							<option value="celticknight" disabled>The Celtic Knight Cross</option>
+							<option value="runicwheel">The runic wheel</option>
+						</select>
+						<input type="button" value="Draw spread" onclick="pullTarotSpread()"> <input type="button" value="clear" onclick="clearDiv('tarotSpreadResult')"> <input type="button" value="Save as csv" onclick="" id="saveSpreadTxt">
+
+						<div id="tarotSpreadResult"></div>
+						<div class="clear"></div>
+					</div>
+
+					<div id="cardDictionary">
+						<p>Coming soon</p>
+					</div>
+
+				<div class="off" id="tarot-credits-dialogue" title="Credits">
+					<ul>
+						<li>The <a href="https://en.wikipedia.org/wiki/Rider_waite" target="_external">Rider-Waite-Smith tarot deck</a> has been in the public domain in the United States since 1966. The images here are from Wikimedia Commons.</li>
+						<li>The Inner World Tarot is by Vince Cabrera. You can download and find more info about it here: <a href="http://www.innerworldtarot.co.nz/index.php/">http://www.innerworldtarot.co.nz/index.php/</a></li>
+						<li>The wonderful re-drawing of the tarot of Marsellies was done by Yoav Ben-dov, and you can find more info about them here: <a href="https://cbdtarot.com/the-cards/">https://cbdtarot.com/the-cards/</a></li>
+						<li>The lovely collage work of the Little Dead Girl tarot was done by Little Dead Girl, and you can find them here: <a href="https://littledeadgirl0.tripod.com/freeprintabletarotcardsthebasicdeck/index.html">https://littledeadgirl0.tripod.com/freeprintabletarotcardsthebasicdeck/index.html</a></li>
+					</ul>
+				</div>					
+			</div>
+		</div>
+	</div>
+
 		<div class="window draggable resizable off" id="ftharkReader">
 			<div class="menuBar">
-				<span id="csvEdit-span" class="windowTitle">Fthark Reader</span>
+				<span id="ftharkReader-span" class="windowTitle">Fthark Reader</span>
 				<a href="#" class="minimize">_</a> | <a href="#" class="close">X</a>
 			</div>
 			
 			<div class="content">
 				<h3>Fthark Reader</h3>
-				<p>Fthark Reader is an application that aids in reading and learning about the Elder Fthark runes. You can draw a single rune for any reading you like, or you can choose from a number of different spreads to read from. There will also eventually be a dictionary section that details different info about the runes for reference.</p>
+				<p>Fthark Reader is an application that aids in reading and learning about the Elder Fthark runes. You can draw a single rune for any reading you like, or you can choose from a number of different spreads to read from. There is also a dictionary section that details different info about the runes for reference.</p>
 				
 				<p>Most of the information here has been sourced from <i>Reading the Runes: A Beginner's Guide</i> by Kim Farnell.</p>
 				
 				<div id="ftharkRunes">
-					<ul>
+					<ul class="runes">
 						<li><a href="#singleRunes">Single Runes</a></li>
 						<li><a href="#runeSpreads">Rune Spreads</a></li>
 						<li><a href="#runeDictionary">Rune Dictionary</a></li>
@@ -519,8 +737,11 @@
 					<div id="runeDictionary">
 						<h3>Rune Dictionary</h3>
 						
+						<p>The runes are divided into three different groups, known as aetts. These aetts are each named and governed by a god from the Norse pantheon, though not everyone agrees on what they mean.</p>
+						
 						<fieldset>
 							<legend>Frey's Aett</legend>
+							<p>These runes are governed by Frey, the Norse goddess of love, war, wealth, and fertility. She recieves those warriors who do not go to Valhalla in her hall, called Sessrúmnir.</p>
 							
 							<table border=1>
 								<tr>
@@ -577,7 +798,7 @@
 										<b>Gebo</b><br>
 										<i>Sound: "g"</i>
 									</td>
-									<td><b>Positive Meaning:</b> Represents gifts and generosity, as well as partnership and vows or commitment. This may mean that you will be experiencing the benefits of a good partnership, or to a sense of unity with what is currently around us./td>
+									<td><b>Positive Meaning:</b> Represents gifts and generosity, as well as partnership and vows or commitment. This may mean that you will be experiencing the benefits of a good partnership, or to a sense of unity with what is currently around us</td>
 									<td><b>Reversed Meaning:</b> Gebo cannot be reversed.</td>
 								</tr><tr>
 									<td>
@@ -715,30 +936,204 @@
 			</div>
 		</div>
 
+		<div id="frugalFetch" class="off draggable window resizable">
+			<div class="menuBar">
+				<span id="frugalFetchWindow" class="windowTitle">frugalFetch</span>
+				<a href="#" class="minimize">_</a> | <a href="#" class="close">X</a>
+			</div>
+
+			<div class="content">
+				<div class="col-half ascii">              ╭ ╖   ╓ ╮<br>            ╭ ╯ ║   ║ ╰ ╮<br>        ━ ━ ╯   ║   ║   ╰ ━ ━<br>                ║   ║<br>                ║   ║<br>               █ █ █ █<br>            █ █ . . .█ ▒<br>          █ ○. . ○ ○ . . ▒<br>        █ ○ ○ ○ ○ . . . . . ▒<br>       █ ○ ○ ○ ○ █ █ ○ ○ . ○ ▒<br>     ━ █ ○ ○ █ █ ○ ○ ▒ ▒ ○ ○ ▒ ━ ━<br> ━ /   █ ○ █ ▒ ○ . . . . . ▒ ▒     \<br>       █ █ ○ . . . . . . . ▒ ▒<br>     ━ █ ○ ○ ○ ○ █ █ ○ ○ . . ▒ ━ ━<br> ━ /   █ ○ ○ █ █ . . ▒ ▒ ○ . ▒     \<br>       █ █ █ . . . . . . ▒ ▒ ▒<br>   ━ ━ █ ○ ○ █ █ █ █ ▒ ▒ . . ▒ ━ ━<br> /     █ █ █ . . . . . . ▒ ▒ ▒     \<br>   / ━ █ . . . . . . . . . . ▒<br>       █ █ █ █ . . . . . ▒ ▒ ▒ ━ ━  <br>   / ━ █ ○ . . █ █ █ █ ▒ . . ▒     \<br>        █ ○ ○ ○ . . . . . . ▒ ━ ━<br>       ━ █ █ █ ○ ○ ○ . ▒ ▒ ▒       \<br>   ━ /   █ ○ ○ █ █ █ █ . . ▒ ━ ━<br>         ━ █ ○ ○ ○ ○ ○ . ▒       \<br>     ━ /     █ █ █ █ █ █ ━ ━<br>                             \
+					</div>
+
+					<div class="col-half">
+						<b>FrugalOS</b><br>
+						---------------------------------------<br>
+						<b>OS:</b> Frugal OS version 1<br>
+						<b>Host:</b> <span id="agent"></span><br>
+						<b>Kernel:</b> Javascript & jQuery 3.6<br>
+						<b>Uptime:</b> <span id="uptime"></span><br>
+						<b>Resolution:</b> <span id="resolution"></span><br>
+						<b>Theme:</b> Sunset<br>
+						<b>Icons:</b> Frugal icons<br><br>
+
+						<b>Sizes:</b><br>
+						---------------------------------------<br>
+						<b>Full:</b> 181mb<br>
+						<b>Index:</b> 51kb<br>
+						<b>Images:</b> 120mb<br>
+						<b>Scripts:</b> 2.20mb<br>
+
+						<p><span style="background: #f6efa6;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="background: #f6ab6c;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="background: #df5e88;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="background: #97133e;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="background: #8fcfd1;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="background: #1f1320;">&nbsp;&nbsp;&nbsp;&nbsp;</span>
+					</div>
+					<div class="clear">Based on <a href="https://github.com/dylanaraps/neofetch" target="_new">Neofetch</a></div>
+				</div>
+
+				<script>
+					function initializeFetch(){
+						showWindow('frugalFetch');
+
+						var height = $(window).height();
+						var width = $(window).width();
+						$("#resolution").append(width + " x " + height);
+
+						var browser = window.navigator.userAgent;
+						$("#agent").append(browser);
+
+						var date1 = new Date("6/30/2023");
+						var date2 = d;
+						var Difference_In_Time = date2.getTime() - date1.getTime(); 
+						var Difference_In_Days = Difference_In_Time / (1000 * 3600 * 24);
+						$("#uptime").append(Math.round(Difference_In_Days) + " days since " + date1);
+					}
+				</script>
+			</div>
+			
+		<div id="weather" class="off draggable window resizable">
+			<div class="menuBar">
+				<span id="frugalFetchWindow" class="windowTitle">Today's Weather</span>
+				<a href="#" class="minimize">_</a> | <a href="#" class="close">X</a>
+			</div>
+
+			<div class="content">
+				<iframe src="https://wttr.in/"></iframe>
+			</div>
+		</div>
+		
+		<div class="window draggable off" id="jspaint">
+			<div class="menuBar">
+				<span id="jspaint-span" class="windowTitle">JSPaint</span>
+				<a href="#" class="minimize">_</a> | <a href="#" class="close">X</a>
+			</div>
+			
+			<div class="content">
+				<iframe src="" width="570" height="500" id="jspaint-iframe">This requires frames</iframe>
+			</div>
+		</div>
+
+		<div class="window draggable off" id="iconViewer">
+			<div class="menuBar">
+				<span id="iconViewer-span" class="windowTitle">Icon Viewer</span>
+				<a href="#" class="minimize">_</a> | <a href="#" class="close">X</a>
+			</div>
+			
+			<div class="content">
+				<iframe src="icons.html" width="570" height="500" id="iconViewer-iframe">This requires frames</iframe>
+			</div>
+		</div>
+		
+		<div class="window draggable off" id="minesweeper">
+			<div class="menuBar">
+				<span id="minesweeper-span" class="windowTitle">Minesweeper</span>
+				<a href="#" class="minimize">_</a> | <a href="#" class="close">X</a>
+			</div>
+			
+			<div class="content">
+				<iframe src="minesweeper.html" width="760px" height="600px"></iframe>
+			</div>
+		</div>
+
+		<div id="folder-winamp" class="off draggable window resizable">
+			<div class="menuBar">
+				<span id="winampWindow" class="windowTitle">Winamp</span>
+				<a href="#" class="minimize">_</a> | <a href="#" class="close">X</a>
+			</div>
+			
+			<div class="content">
+				<div class="folderIcon">
+					<a href="#" onclick="startWebamp()"><img src="img/icons/icon_winamp_2x.png" alt="Winamp logo"></a><br>
+					<span class="iconLabel">Winamp</span></a>
+				</div>
+				<div class="folderIcon" id="playlist-keygen">
+					<a href="#" ><img src="img/icons/icon_playlist_2x.png" alt="Playlist file"></a><br>
+					<span class="iconLabel">Essential Keygen Music (Full)</span></a>
+				</div>
+				<div class="folderIcon">
+					<a href="#" onclick="addPlaylist()"><img src="img/icons/icon_playlist_2x.png" alt="Playlist file"></a><br>
+					<span class="iconLabel">19-83 - Haircuts for Men</span></a>
+				</div>
+				<div class="folderIcon">
+					<a href="#" onclick="addPlaylist()"><img src="img/icons/icon_playlist_2x.png" alt="Playlist file"></a><br>
+					<span class="iconLabel">Beethoven: Complete Piano Music</span></a>
+				</div>
+				<div class="folderIcon">
+					<a href="#" onclick="addPlaylist()"><img src="img/icons/icon_playlist_2x.png" alt="Playlist file"></a><br>
+					<span class="iconLabel">OwlTree - Tender Pecking</span></a>
+				</div>
+				<div class="folderIcon">
+					<a href="#" onclick="addPlaylist()"><img src="img/icons/icon_playlist_2x.png" alt="Playlist file"></a><br>
+					<span class="iconLabel">Evils That Never Came - June</span></a>
+				</div>
+				<div class="folderIcon">
+					<a href="#" onclick="addPlaylist()"><img src="img/icons/icon_playlist_2x.png" alt="Playlist file"></a><br>
+					<span class="iconLabel">Evils That Never Came - Northerly Windings</span></a>
+				</div>
+
+				<div id="winamp" class="off"></div>
+			</div>
+		</div>
+		
+		<div class="window draggable off" id="ePubReader">
+			<div class="menuBar">
+				<span id="epubReaderWindow" class="windowTitle">ePub Reader</span>
+				<a href="#" class="minimize">_</a> | <a href="#" class="close">X</a>
+			</div>
+			
+			<div class="content">
+				<input type="file" value="Load ePub" id="epubLoad">
+				
+				<div id="bookArea">
+					<div id="prev" class="arrows"><</div>
+					<div id="next" class="arrows">></div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="window draggable off" id="stickers">
+			<div class="menuBar">
+				<span id="epubReaderWindow" class="windowTitle">Stickers</span>
+				<a href="#" class="minimize">_</a> | <a href="#" class="close">X</a>
+			</div>
+			
+			<div class="content">
+				<p>Put neat images on your desktop! Why? Because it's fun! Do they do anything? No!</p>
+				
+				<div id="stickerImages">
+					<img src="img/sticker_mushroom1.png" alt="mushroom 1"> <img src="img/sticker_mushroom2.png" alt="mushroom 2"> <img src="img/sticker_mushroom3.png" alt="mushroom 3"> <img src="img/sticker_butterfly2.png" alt="butterfly 2"><img src="img/sticker_butterfly1.png" alt="butterfly 1"> <img src="img/sticker_beetle2.png" alt="beetle 2"> <img src="img/sticker_beetle1.png" alt="beetle 1">
+				</div>
+			</div>
+		</div>	
+
 	</div>
 	
 	
 	<ul id="beginMenu" class="beginMenuLinks" style="display: none">
-		<li><div><a href="#" onclick="showWindow('settings')">Settings</a></div></li>
-		<li><div><a href="#" onclick="showWindow('calculator')">Calculator</a></div></li>
-		<li><div><a href="#" onclick="showWindow('textpad')">Textpad</a></div></li>
-		<li><div><a href="#" onclick="showWindow('CsvEdit')">CSVEdit</a></div></li>
-		<li><div><a href="#" onclick="showWindow('paganTools')">Pagan Tools</a></div>
+		<li><div><img src="img/icons/icon_winamp.png" alt="icon"> <a href="#" onclick="startWebamp()">Winamp</a></div></li>
+		<li><div><img src="img/icons/icon_terminal.png" alt="icon"> <a href="#" onclick="initializeFetch()">FrugalFetch</a></div></li>
+		<li><div><img src="img/icons/icon_book.png" alt="icon"> <a href="#" onclick="showWindow('ePubReader')">ePub Reader</a></div></li>
+		<li><div><img src="img/icons/icon_settings.png" alt="icon"> <a href="#" onclick="showWindow('settings')">Settings</a></div></li>
+		<li><div><img src="img/icons/icon_calculator.png" alt="icon"> <a href="#" onclick="showWindow('calculator')">Calculator</a></div></li>
+		<li><div><img src="img/icons/icon_textpad.png" alt="icon"> <a href="#" onclick="showWindow('textpad')">Textpad</a></div></li>
+		<li><div><img src="img/icons/icon_csv.png" alt="icon"> <a href="#" onclick="showWindow('CsvEdit')">CSVEdit</a></div></li>
+		<li><div><img src="img/icons/icon_pentacle.png" alt="icon"> <a href="#">Pagan Tools</a></div>
 			<ul>
-				<li><a href="#" onclick="showWindow('paganTools')">Main</a></li>
-				<li><a href="#" onclick="showWindow('ftharkReader')">Fthark Reader</a></li>
+				<li><img src="img/icons/icon_pentacle.png" alt="icon"> <a href="#" onclick="showWindow('paganTools')">Main</a></li>
+				<li><img src="img/icons/icon_fthark.png" alt="icon"> <a href="#" onclick="showWindow('ftharkReader')">Fthark Reader</a></li>
+				<li><img src="img/icons/icon_tarot.png" alt="icon"> <a href="#" onclick="showWindow('tarotReader')">Tarot Reader</a></li>
 			</ul>
 		</li>
 	</ul>
+
+	<div id="calendar" class="off"></div>
 	
 	<div id="taskBar">
 		<a href="#" class="toggleMenu" id="toggleBegin">Begin</a>
 		
 		<ul	id="minimizedApps">
 		</ul>
-		
+	
 		<div id="rightTaskbar">
-			<span id="time">00:00</span>
+			<span id="swClock" toolTip="Swatch time"></span> <img src="img/icon_tb_clock.png" alt=""> <span id="rtClock"></span>
 		</div>
 	</div>
 	
@@ -750,6 +1145,8 @@
 		function showWindow(div){
 			document.getElementById(div).style.display = "block";
 			divClass = "." + div;
+			document.getElementById(div).style.zindex = zindex+1;
+			zindex++;
 			
 			// Check if there's a matching element in the taskbar and remove it if there is
 			var classTest = findFirstChildByClass(document.getElementById("minimizedApps"), div);
@@ -792,6 +1189,38 @@
     	else
     		$("." + div).empty();
     }
+
+	  // This is for the clock at the bottom. Thank you W3CSchools!
+	  function startTime() {
+		  const today = new Date();
+		  let h = today.getHours();
+		  let m = today.getMinutes();
+		  let s = today.getSeconds();
+
+			let ampm = h >= 12 ? 'pm' : 'am';
+  		h = h % 12;
+  		h = h ? h : 12;
+
+		  m = checkTime(m);
+		  s = checkTime(s);
+
+		  let swatcht = getSwatchBeat(today, 2);
+
+		  document.getElementById('swClock').innerHTML = swatcht;
+		  document.getElementById('rtClock').innerHTML =  h + ":" + m + ":" + s + " " + ampm;
+		  setTimeout(startTime, 1000);
+		}
+
+		function getSwatchBeat(date, places = 3) {
+  		return (((+date + 3.6e6) % 8.64e7) / 8.64e4).toFixed(places);
+		}
+
+		function checkTime(i) {
+		  if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
+		  return i;
+		}
 </script>
+<script src="script/epubFunctions.js"></script>
+
 </body>
 </html>

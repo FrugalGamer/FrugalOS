@@ -14,6 +14,13 @@ $(document).ready( function() {
 		data = "<img src='" + $(this).children("img").attr("src") + "'><br>" + $(this).children("img").attr("tooltip");
 		$("#cardresult").append(data);
 	});
+
+	$("#tarot-credits-dialogue").dialog({
+		autoOpen: false
+	});
+	$("#tarot-credits-menu").click(function(){
+		$("#tarot-credits-dialogue").dialog("open");
+	});
 })
 
 
@@ -255,7 +262,8 @@ function displayTarotCard(){
 }
 
 function pullTarotSpread(){
-	var spreadName = $("tarotSpreadName").value;
+	var spreadName = document.getElementById("tarotSpreadName").value;
+	console.log(spreadName);
 	checkDirectory();
 	$("#tarotSpreadResult").empty();
 

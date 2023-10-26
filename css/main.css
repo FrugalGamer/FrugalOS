@@ -59,6 +59,7 @@ input[type=text] {
 	margin-bottom: 0.5em;
 }
 select { font-family: monospace; font-size: 1em; background-color: #f6ab6c; padding: 0.4em; border: 1px solid #000; border-radius: 10px; }
+iframe { border: 0px; }
 
 details {
 	margin: 1em 0;
@@ -180,7 +181,7 @@ div.window {
 	height: 2.5em;
 }
 	#rightTaskbar {
-		width: 110px;
+		width: 160px;
 		right: 5px;
 		bottom: 5px;
 		position: fixed;
@@ -253,7 +254,37 @@ div.window {
 .ascii { white-space: pre; line-height: 14px; }
 .flippedx { transform: scaleX(-1); }
 .flippedy { transform: scaleY(-1); }
-.flippedboth { transform: scaleY(-1), scaleX(-1); }
+.flippedboth { transform: scaleY(-1) scaleX(-1); }
+img.inline { float: left; width: 200px; margin-right: 1em; border: 1px solid #4f4e83; }
+#stickersCanvas { z-index: 0; position: absolute; }
+	.stickers { width: 200px; height: 200px; overflow: visible; }
+		.stickers img { z-index: 0; }
+		.stickers a { 
+			height: 32px;
+			width: 32px;
+			text-indent: -999px;
+			visibility: hidden;
+			color: #000;
+			text-decoration: none;
+			font-size: 1.2em;
+			background-color: #df5e88;
+			overflow: hidden;
+			border-radius: 12px;
+			float: left;
+		}
+		.stickers:hover a { visibility: visible; }
+		.stickers .rotate { 
+			display: block;
+			background: url('../img/icon_rotateLeft.png') no-repeat #df5e88 center;
+		}
+		.stickers .resize { 
+			display: block;
+			background: url('../img/icon_resize.png') no-repeat #df5e88 center;
+		}
+		.stickers .close { 
+			display: block;
+			background: url('../img/icon_close.png') no-repeat #df5e88 center;
+		}
 
 /* ======== Specific window styles here ======== */
 #frugalFetch .content { background-color: #1f1320; color: #f6efa6; }
@@ -335,4 +366,7 @@ div.window {
 #tarotSpreadResult img { width: 100px; }
 	#tarotSpreadResult #cardresult img {width: auto;}
 
-img.inline { float: left; width: 200px; margin-right: 1em; border: 1px solid #4f4e83; }
+#weather { width: 330px; }
+#minesweeper { width: 790px; height: 450px; }
+#stickerImages img { height: 200px; }
+	#stickerImages img:hover {cursor: pointer;}
