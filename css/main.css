@@ -275,15 +275,15 @@ img.inline { float: left; width: 200px; margin-right: 1em; border: 1px solid #4f
 		.stickers:hover a { visibility: visible; }
 		.stickers .rotate { 
 			display: block;
-			background: url('../img/icon_rotateLeft.png') no-repeat #df5e88 center;
+			background: url('../img/icons/icon_rotateLeft.png') no-repeat #df5e88 center;
 		}
 		.stickers .resize { 
 			display: block;
-			background: url('../img/icon_resize.png') no-repeat #df5e88 center;
+			background: url('../img/icons/icon_resize.png') no-repeat #df5e88 center;
 		}
 		.stickers .close { 
 			display: block;
-			background: url('../img/icon_close.png') no-repeat #df5e88 center;
+			background: url('../img/icons/icon_close.png') no-repeat #df5e88 center;
 		}
 
 /* ======== Specific window styles here ======== */

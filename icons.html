@@ -13,7 +13,32 @@
 	<script>
 		$(document).ready(function() {
 			$(".menu").menu();
+			
+			$("#iconViewer-small-menu").on("click", function() { getSources("1x") });
+			$("#iconViewer-med-menu").on("click", function() { getSources("2x") });
+			$("#iconViewer-large-menu").on("click", function() { getSources("3x") });
 		});
+		
+		function getSources(size) {
+			let tags = $(".folderIcon img");
+			console.log(tags);
+			
+			for(let key in tags){
+				string = tags[key].src;
+				//console.log(string);
+				
+				if(string){
+					if(string.search("1x"))
+						string.replace("1x", size)
+					else if(string.search("2x"))
+						string.replace("2x", size)
+					else if(string.search("3x"))
+						string.replace("3x", size)
+				}
+				else
+					console.log("Error");
+			}
+		}
 	</script>
 </head>
 
@@ -38,7 +63,7 @@
 </div>			
 
 
-<div id="iconsContainer">
+<div class="iconsContainer">
 	<div class="folderIcon">
 		<img src="img/icons/icon_accessFolder_1x.png" alt="Acessibility Folder"><br>
 		<span class="iconLabel">Accessibility Folder</span>
@@ -292,10 +317,6 @@
 		<span class="iconLabel">CPU</span>
 	</div>
 	<div class="folderIcon">
-		<img src="img/icons/icon_mouse_1x.png" alt="Mouse"><br>
-		<span class="iconLabel">Mouse</span>
-	</div>
-	<div class="folderIcon">
 		<img src="img/icons/icon_helpBook_1x.png" alt="Help Book"><br>
 		<span class="iconLabel">Help Book</span>
 	</div>
@@ -308,16 +329,96 @@
 		<span class="iconLabel">HTML File</span>
 	</div>
 	<div class="folderIcon">
+		<img src="img/icons/icon_xml_1x.png" alt="XML File"><br>
+		<span class="iconLabel">XML File</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_css_1x.png" alt="CSS File"><br>
+		<span class="iconLabel">CSS File</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_php_1x.png" alt="PHP File"><br>
+		<span class="iconLabel">PHP File</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_asp_1x.png" alt="ASP File"><br>
+		<span class="iconLabel">ASP File</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_js_1x.png" alt="JS File"><br>
+		<span class="iconLabel">JS File</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_json_1x.png" alt="JSON File"><br>
+		<span class="iconLabel">JSON File</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_python_1x.png" alt="Python File"><br>
+		<span class="iconLabel">Python File</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_c_1x.png" alt="C File"><br>
+		<span class="iconLabel">C File</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_csharp_1x.png" alt="C# File"><br>
+		<span class="iconLabel">C# File</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_c++_1x.png" alt="C++ File"><br>
+		<span class="iconLabel">C++ File</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_inputs_1x.png" alt="Inputs"><br>
+		<span class="iconLabel">Inputs</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_internetOptions_1x.png" alt="Internet Options"><br>
+		<span class="iconLabel">Internet Options</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_gamepad_1x.png" alt="Gamepad"><br>
+		<span class="iconLabel">Gamepad</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_keyWithLabel_1x.png" alt="Key With Label"><br>
+		<span class="iconLabel">Key With Label</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_keys_1x.png" alt="Keys"><br>
+		<span class="iconLabel">Keys</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_keyboard2_1x.png" alt="Keyboard"><br>
+		<span class="iconLabel">Keyboard</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_email_1x.png" alt="Email"><br>
+		<span class="iconLabel">Email</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_midiFile_1x.png" alt="MIDI File"><br>
+		<span class="iconLabel">MIDI File</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_wifi_1x.png" alt="Wifi"><br>
+		<span class="iconLabel">Wifi</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_mouse_1x.png" alt="Mouse"><br>
+		<span class="iconLabel">Mouse</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_sharingOverlay_1x.png" alt="Sharing Overlay"><br>
+		<span class="iconLabel">Sharing Overlay</span>
+	</div>
+	<div class="folderIcon">
 		<img src="img/icons/icon_trash_1x.png" alt="Trash"><br>
 		<span class="iconLabel">Trash</span>
 	</div>
 	<div class="folderIcon">
 		<img src="img/icons/icon_messaging_1x.png" alt="Messaging"><br>
 		<span class="iconLabel">Messaging</span>
-	</div>
-	<div class="folderIcon">
-		<img src="img/icons/icon_email_1x.png" alt="Email"><br>
-		<span class="iconLabel">Email</span>
 	</div>
 	<div class="folderIcon">
 		<img src="img/icons/icon_mic_1x.png" alt="Microphone"><br>
@@ -372,6 +473,10 @@
 		<span class="iconLabel">GIF</span>
 	</div>
 	<div class="folderIcon">
+		<img src="img/icons/icon_webp_1x.png" alt="WEBP"><br>
+		<span class="iconLabel">WEBP</span>
+	</div>
+	<div class="folderIcon">
 		<img src="img/icons/icon_svg_1x.png" alt="SVG"><br>
 		<span class="iconLabel">SVG</span>
 	</div>
@@ -384,6 +489,22 @@
 		<span class="iconLabel">Image File</span>
 	</div>
 	<div class="folderIcon">
+		<img src="img/icons/icon_trueType_1x.png" alt="Truetype Font"><br>
+		<span class="iconLabel">Truetype font</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_postScript_1x.png" alt="Postscript Font"><br>
+		<span class="iconLabel">Postscript font</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_openType_1x.png" alt="Opentype Font"><br>
+		<span class="iconLabel">Opentype font</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_woff_1x.png" alt="WOFF Font"><br>
+		<span class="iconLabel">WOFF font</span>
+	</div>
+	<div class="folderIcon">
 		<img src="img/icons/icon_keyboard_1x.png" alt="MIDI Keyboard"><br>
 		<span class="iconLabel">MIDI Keyboard</span>
 	</div>
@@ -394,10 +515,6 @@
 	<div class="folderIcon">
 		<img src="img/icons/icon_chess_1x.png" alt="Chess"><br>
 		<span class="iconLabel">Chess</span>
-	</div>
-	<div class="folderIcon">
-		<img src="img/icons/icon_keys_1x.png" alt="Keys"><br>
-		<span class="iconLabel">Keys</span>
 	</div>
 	<div class="folderIcon">
 		<img src="img/icons/icon_printer_1x.png" alt="Printer"><br>
@@ -446,6 +563,14 @@
 	<div class="folderIcon">
 		<img src="img/icons/icon_wiki_1x.png" alt="Wiki"><br>
 		<span class="iconLabel">Wiki</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_battery_1x.png" alt="Battery"><br>
+		<span class="iconLabel">Battery</span>
+	</div>
+	<div class="folderIcon">
+		<img src="img/icons/icon_power_1x.png" alt="Power"><br>
+		<span class="iconLabel">Power</span>
 	</div>
 	
 	<!--- Custom icons start here --->
@@ -558,10 +683,6 @@
 		<span class="iconLabel">Fountain Pen File</span>
 	</div>
 	<div class="folderIcon">
-		<img src="img/icons/icon_flipy.png" alt="Flip Y-axis"><br>
-		<span class="iconLabel">Flip Y-axis</span>
-	</div>
-	<div class="folderIcon">
 		<img src="img/icons/icon_tb_clock.png" alt="Taskbar Clock"><br>
 		<span class="iconLabel">Taskbar Clock</span>
 	</div>
@@ -577,6 +698,12 @@
 		<img src="img/icons/icon_github_16.png" alt="Github 16px"><br>
 		<span class="iconLabel">Github 16px</span>
 	</div>
+</div>
+
+	<hr>
+	
+<div class="iconsContainer">
+	<h2>UI Elements</h2>
 	<div class="folderIcon">
 		<img src="img/icons/icon_rotateLeft.png" alt="Rotate Left"><br>
 		<span class="iconLabel">Rotate Left</span>

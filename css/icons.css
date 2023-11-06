@@ -70,7 +70,7 @@ div.window {
 				.progMenu .menu li a { width: 100%; color: #000; }
 				.progMenu .menu li:hover{ border: 0; background-color: #f6ab6c; }
 
-#iconsContainer { padding-top: 2.5em; }
+.iconsContainer { padding-top: 2.5em; clear: both; }
 	.folderIcon { text-align: center; height: 62px; width: 80px; display: inline-block; vertical-align: top; float: left; margin-left: 1em; }
 	.folderIcon a { text-decoration: none; color: #000; }
 	
