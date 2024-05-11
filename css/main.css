@@ -25,7 +25,14 @@
 	
 	.beginMenuLinks .ui-state-active { background: #df5e88; border: 0px; }
 
+	.ui-draggable, .ui-dialog-titlebar { cursor: url("../img/cursor_move.png"), move; }
+
 /* ======== My styles start here ======== */
+
+/* ==== Cursor styles ==== */
+* { cursor: url("../img/cursor_default.png"), default; }
+a { cursor: url("../img/cursor_pointer.png"), pointer; }
+.target-element { cursor: url("../img/cursor_crosshair.png"), crosshair; }
 
 body { 
 	background-color: #6ea6a8;
@@ -46,11 +53,12 @@ input[type=button], input[type=file] {
 	border-radius: 8px;
 	font-family: monospace;
 	padding: 0.3em;
+	margin-bottom: 0.5em;
 	min-width: 75px;
 	box-shadow: inset 1px 1px 0px 0px #f6ab6c, inset -1px -1px 0px 0px #97133e;
 }
 input[type=button]:hover {
-	cursor: pointer;
+	cursor: url("../img/cursor_pointer.png"), pointer;
 }
 input[type=text] {
 	font-family: monospace;
@@ -60,6 +68,7 @@ input[type=text] {
 }
 select { font-family: monospace; font-size: 1em; background-color: #f6ab6c; padding: 0.4em; border: 1px solid #000; border-radius: 10px; }
 iframe { border: 0px; }
+hr { border: 2px dotted #000; }
 
 details {
 	margin: 1em 0;
@@ -78,7 +87,7 @@ div#desktopIcons {
 } 
 	#desktopIcons div { float: right; margin-right: 1em; }
 	#desktopIcons p { display: block; }
-	#desktopIcons span, #desktopIcons a span { background-color: #ffffff; border: 1px solid #353535; text-decoration: none; }
+	#desktopIcons span, #desktopIcons a span { background-color: #ffffff; border: 1px solid #353535; text-decoration: none; padding: 2px; }
 div.window {
 	border: 1px solid #353535;
 	width: 600px;
@@ -292,7 +301,7 @@ img.inline { float: left; width: 200px; margin-right: 1em; border: 1px solid #4f
 
 #imageViewer .navBar ul { padding: 0; margin: 0; }
 #imageViewer .navBar li { list-style-type: none; display: table-cell; padding: 0 0.5em; margin: 0; }
-	#imageViewer .navBar li:hover { cursor: pointer; }
+	#imageViewer .navBar li:hover { cursor: url("../img/cursor_pointer.png"), pointer; }
 #imageViewer #staticImage { max-width: 100%; height: auto; }
 #imageViewer #imgContainer { overflow: scroll; }
 	#imageViewer #exifData { overflow: scroll; max-height: 200px; }
@@ -300,6 +309,7 @@ img.inline { float: left; width: 200px; margin-right: 1em; border: 1px solid #4f
 #textpad_wa {
 	width: calc(100% - 1em);
 	min-height: 300px;
+	cursor: url("../img/cursor_text.png"), text;
 }
 	#textpad .uiButtons { margin-top: 0.5em; margin-bottom: 0.5em; }
 
@@ -325,7 +335,7 @@ img.inline { float: left; width: 200px; margin-right: 1em; border: 1px solid #4f
 	border: 1px solid #ccc;
 }
 	#csvEdit table.csvDisplay td { border: 1px solid #ccc; height: 1em; padding: 0.2em; }
-		#csvEdit table.csvDisplay td input { width: 90%; border: none; background: none; cursor: crosshair; }
+		#csvEdit table.csvDisplay td input { width: 90%; border: none; background: none; cursor: url("../img/cursor_crosshair.png"), crosshair; }
 			#csvEdit table.csvDisplay tr.even { background: #fddae6; }
 	#csvEdit table.csvDisplay tr:hover { background: #c1eced; }
 
@@ -339,7 +349,7 @@ img.inline { float: left; width: 200px; margin-right: 1em; border: 1px solid #4f
 		color: #F6EFA6; padding: 0.5em;
 		border-radius: 8px
 		}
-		#bookArea .arrows:hover { background-color: #8FCFD1; cursor: pointer; }
+		#bookArea .arrows:hover { background-color: #8FCFD1; cursor: url("../img/cursor_pointer.png"), pointer; }
 	#bookArea #prev { float: left; }
 	#bookArea #next { float: right; }
 
@@ -369,4 +379,4 @@ img.inline { float: left; width: 200px; margin-right: 1em; border: 1px solid #4f
 #weather { width: 330px; }
 #minesweeper { width: 790px; height: 450px; }
 #stickerImages img { height: 200px; }
-	#stickerImages img:hover {cursor: pointer;}
+	#stickerImages img:hover {cursor: url("../img/cursor_pointer.png"), pointer;}

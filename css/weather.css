@@ -1,0 +1,68 @@
+
+heading {
+  letter-spacing: 1px;
+  line-height: 1.111em;
+  font-weight: bold;
+}
+
+.ow-row {
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 4%;
+}
+
+.ow-ico {
+  line-height: 1.1em;
+}
+
+.ow-widget {
+  font-family: "Helvetica Neue", Helvetica, sans-serif;
+  font-size: 16px;
+  color: #353535;
+  padding: 2%;
+}
+
+  .pull-left {
+    float: left;
+  }
+
+  .pull-right {
+    float: right;
+  }
+
+.ow-city-name {
+  font-size: 24px;
+}
+
+.ow-ico-current {
+  font-size: 80px;
+  width: 1.1em;
+  padding-top: 13px;
+}
+
+.ow-temp-current {
+  font-size:60px;
+  margin: 0 10%;
+}
+
+.ow-current-desc {
+  line-height: 1.5em;
+}
+
+.ow-forecast-item {
+  float: left;
+  width: calc(25% - 1px);
+  text-align: center;
+  border-right:1px solid white;
+}
+
+  .ow-ico-forecast {
+    font-size: 30px;
+    position: relative;
+    margin: 10px 0;
+  }
+
+  .ow-forecast-temp span {
+    display: inline-block;
+    margin: 0 5px;
+  }
