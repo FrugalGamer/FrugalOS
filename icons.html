@@ -2,7 +2,7 @@
 
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Icon Viewer</title>
 	<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
   	<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
@@ -12,6 +12,8 @@
 
 	<script>
 		$(document).ready(function() {
+			$("#iconViewer-about-text").dialog({ autoOpen: false });
+				$("#iconViewer-about-menu").click(function(){ $("#iconViewer-about-text").dialog("open"); });
 			$(".menu").menu();
 			
 			$("#iconViewer-small-menu").on("click", function() { getSources("1x") });
@@ -54,13 +56,13 @@
 		</li>
 		<li><a href="#" id="iconViewer-download-menu">Download</a>
 			<ul>
-				<li><a href="#" id="iconViewer-png-menu">PNG</a></li>
-				<li><a href="#" id="iconViewer-ico-menu">ICO</a></li>
+				<li><a href="files/FrugalOSIcons.zip" id="iconViewer-png-menu">PNG</a></li>
+				<li><a href="#" id="iconViewer-ico-menu"><strike>ICO</strike></a></li>
 			</ul>
 		</li>
 		<li><a href="#" id="iconViewer-about-menu">About</a></li>
 	</ul>
-</div>			
+</div>
 
 
 <div class="iconsContainer">
@@ -683,6 +685,10 @@
 		<span class="iconLabel">Fountain Pen File</span>
 	</div>
 	<div class="folderIcon">
+		<img src="img/icons/icon_prompts_1x.png" alt="Daily Prompts"><br>
+		<span class="iconLabel">Daily Prompts</span>
+	</div>
+	<div class="folderIcon">
 		<img src="img/icons/icon_tb_clock.png" alt="Taskbar Clock"><br>
 		<span class="iconLabel">Taskbar Clock</span>
 	</div>
@@ -700,7 +706,7 @@
 	</div>
 </div>
 
-	<hr>
+	
 	
 <div class="iconsContainer">
 	<h2>UI Elements</h2>
@@ -729,4 +735,9 @@
 		<span class="iconLabel">Resize</span>
 	</div>
 </div>
+
+<div id="iconViewer-about-text" class="off" title="About the Icons">
+	Icon Viewer lets you view all of the icons I have created for the FrugalOS project. They are licensed under the <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.en">CC-BY-SA</a>, which means you can reuse them as much as you like, but you must give attribution, and you must release them under the same license. Downloads will be coming soon.
+</div>
+
 </body>
