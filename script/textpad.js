@@ -1,3 +1,4 @@
+
 // From here: https://foolishdeveloper.com/save-textarea-text-to-a-file-using-javascript/
 function downloadFile(filename, content) {
   // It works on all HTML5 Ready browsers as it uses the download attribute of the <a> element:
@@ -50,12 +51,26 @@ $( function() {
 	$("#modalDialogue").dialog({
 		autoOpen: false
 	}); 
-	$("#aboutDialogue").dialog({
+
+	// This is a blank dialog box that can be used for different things
+	$("#blankDialogue").dialog({
 		autoOpen: false
 	});
 	
 	$("#textpad-about-menu").click(function() {
-		$("#aboutDialogue").dialog("open");
+		$("#blankDialogue p").html("<p>TextPad is a simple plain text and markdown editor that I've put together as a programming learning tool. You can currently use it to create, open, and edit plain text files.</p>" +
+			"<p>The spellchecker tool uses Typo.js by Chris Finke and is available on Github here:<br>" +
+			"<a href='https://github.com/cfinke/Typo.js/'>https://github.com/cfinke/Typo.js/</a>");
+		
+		$("#blankDialogue").dialog("option", "title", "About Textpad");
+		$("#blankDialogue").dialog("open");
+	});
+
+	$("#textpad-spellcheck").click(function() {
+		$("#blankDialogue p").html("<p>testing testing</p>");
+		
+		$("#blankDialogue").dialog("option", "title", "Spellcheck");
+		$("#blankDialogue").dialog("open");
 	});
 	
 	// This is the code for the Clear button
@@ -80,6 +95,19 @@ $( function() {
 		downloadFile(filename,textpadContent);
 	});
 
+	$("#textpad-wordcount").click(function() {
+		var textVal = $("#textpad #textpad_wa").val();
+		var count = WordCount(textVal);
+
+		var result = "<b>Characters:</b> " + textVal.length + "<br><b>Words:</b>" + count;
+		// Print the result to the window
+		$("#blankDialogue p").html(result);
+
+		// Make sure to change the window title!
+		$("#blankDialogue").dialog("option", "title", "Word count");
+		$("#blankDialogue").dialog("open");
+	});
+
 	// This grabs the menu link and, when clicked, simulates a click on the input button
 	// that triggers the file submit input (hidden)
 	$("#textpad-open-menu").click(function(){
@@ -96,13 +124,13 @@ $( function() {
 		
 		switch(id){
 			case "H1":
-				formatting = "#";
+				formatting = "# ";
 				break;
 			case "H2":
-				formatting = "##";
+				formatting = "## ";
 				break;
 			case "H3":
-				formatting = "###";
+				formatting = "### ";
 				break;
 			case "bold":
 				formatting = "**";
@@ -113,6 +141,15 @@ $( function() {
 			case "hr":
 				formatting = "---";
 				break;
+			case "ulist":
+				formatting = "+ ";
+				break;
+			case "olist":
+				formatting = "1. ";
+				break;
+			case "check":
+				formatting = "[] ";
+				break;
 		}
 		
 		const txtToAdd = formatting;
@@ -122,3 +159,7 @@ $( function() {
 	});
 	
 });
+
+function WordCount(str) { 
+  return str.split(" ").length;
+}

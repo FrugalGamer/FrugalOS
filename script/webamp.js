@@ -245,5 +245,8 @@ function startWebamp() {
 $( document ).ready(function() {
     $("#playlist-keygen").on("click", function() { 
       addPlaylist("EssentialKeygenMusic.m3u");
-  });
+    });
+    $("#playlist-haricuts").on("click", function() { 
+      addPlaylist("HaircutsForMen-19-83.m3u");
+    });
 })

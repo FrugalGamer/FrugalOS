@@ -1376,7 +1376,7 @@ $(document).ready( function() {
 	$("#ftharkRunes").tabs({ active: 0 });
 	
 	// This is for downloading rune spreads. I'm basically digging through the DOM and re-building the objects I made earlier. I'm aware that I could build both the printed tables and the print string simultaneously above, but I've already written everything above and don't want to go back over it. Plus, this way I get to learn about building strings from existing HTML elements.
-	$("#saveSpreadTxt").click(function() {
+	$("#saveSpreadTxt-runes").click(function() {
 		// Here I'm grabbing everything that I've tagged with "spreadElement." I specifically tagged these so I could pull them out later
 		spreadElements = Array.from(document.getElementById("ftharkSpreadResult").getElementsByClassName("spreadElement"));
 		var printString = "";
