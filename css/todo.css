@@ -1,0 +1,6 @@
+#todo li {
+	border-bottom: 3px dotted #000;
+	padding: 0 0 0.2em 0;
+}
+	#todo li.completed span.text { font-style: italic; text-decoration: line-through; }
+	#todo li .completeDate { font-style: normal; text-decoration: none; color: green; }
